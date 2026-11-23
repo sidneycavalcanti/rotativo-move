@@ -9,7 +9,7 @@
 :root{
   --bg:#07090e; --panel:#111722; --panel2:#18202e; --panel3:#1f2939; --line:#263247; --line2:#33425c;
   --txt:#e7ecf5; --mut:#8b97ab; --mut2:#5f6b80;
-  --blue:#4f8cff; --blue2:#3a74e0; --green:#2fbf71; --green2:#25a660; --red:#f0566a;
+  --blue:#4f8cff; --blue2:#3a74e0; --green:#2fbf71; --green2:#25a660; --red:#f0566a; --amber:#f5b84a;
   --r:14px; --r2:10px; --sh:0 10px 30px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.03) inset;
   --t:180ms cubic-bezier(.2,.7,.3,1);
   color-scheme:dark;
@@ -23,18 +23,19 @@ button{cursor:pointer;border:0;background:none}
 
 /* ---------- configuracao ---------- */
 #settings{min-height:100%;background:radial-gradient(1200px 600px at 10% -10%,#16243f55,transparent),radial-gradient(900px 500px at 110% 0%,#0f2b2155,transparent)}
-.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:18px 32px;background:rgba(7,9,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:18px 32px;background:rgba(7,9,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
 .logo{width:34px;height:34px;border-radius:9px;background:var(--panel2);display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:6px;box-shadow:var(--sh)}
 .logo i{border-radius:2px;background:var(--blue)}.logo i:first-child{grid-row:span 2}.logo i:last-child{background:var(--green)}
 .brand h1{font-size:18px;font-weight:700;letter-spacing:-.01em}.brand p{font-size:12.5px;color:var(--mut)}
-.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;font-weight:600;font-size:14px;border:1px solid var(--line2);background:var(--panel2);transition:background var(--t),border-color var(--t),transform var(--t),box-shadow var(--t)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;font-weight:600;font-size:14px;border:1px solid var(--line2);background:var(--panel2);transition:background var(--t),border-color var(--t),transform var(--t),box-shadow var(--t);white-space:nowrap}
 .btn:hover{background:var(--panel3);border-color:#40516f}.btn:active{transform:translateY(1px)}
-.btn:focus-visible,.ico:focus-visible,input:focus-visible,textarea:focus-visible,.layout:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn:focus-visible,.ico:focus-visible,input:focus-visible,textarea:focus-visible,.layout:focus-visible,.seg button:focus-visible,.mid:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .btn svg{width:17px;height:17px}
 .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 6px 18px #4f8cff33}.btn.primary:hover{background:var(--blue2)}
 .btn.go{background:var(--green);border-color:var(--green);color:#03140b;box-shadow:0 6px 18px #2fbf7133}.btn.go:hover{background:var(--green2)}
 .btn.ghost{background:transparent}
+.btn.sm{height:34px;padding:0 12px;font-size:13px}
 .wrap{max-width:1280px;margin:0 auto;padding:32px}
 .sec{margin-bottom:34px}.sec>h2{font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px}
 .layouts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
@@ -45,6 +46,16 @@ button{cursor:pointer;border:0;background:none}
 .mini i{background:var(--panel3);border-radius:4px;transition:background var(--t)}.layout.on .mini i{background:#4f8cff66}
 .l1{grid-template:1fr/1fr}.l2{grid-template:1fr/1fr 1fr}.l3{grid-template:1fr 1fr/1fr 1fr}.l3 i:first-child{grid-row:span 2}.l4{grid-template:1fr 1fr/1fr 1fr}
 .layout b{display:block;font-size:14.5px}.layout span{font-size:12.5px;color:var(--mut)}
+/* enquadramento */
+.enq{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.card h4{font-size:14px;font-weight:650;margin-bottom:3px}.card p{font-size:12.5px;color:var(--mut);margin-bottom:12px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-size:13px;font-weight:600;color:var(--mut);transition:all var(--t);text-align:left;line-height:1.25}
+.seg button small{display:block;font-weight:500;font-size:11.5px;color:var(--mut2)}
+.seg button:hover{border-color:var(--line2);color:var(--txt)}
+.seg button.on{border-color:var(--blue);background:#4f8cff1a;color:var(--txt)}.seg button.on small{color:var(--mut)}
+/* areas e links */
 .areas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .area{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:surge .25s ease both}
 @keyframes surge{from{opacity:0;transform:translateY(6px)}}
@@ -52,56 +63,89 @@ button{cursor:pointer;border:0;background:none}
 .num{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:13px;font-weight:700;background:#4f8cff22;color:var(--blue)}
 .area-h h3{font-size:15px;font-weight:650;margin-right:auto}.area-h small{color:var(--mut);font-size:12.5px}
 .links{padding:12px;display:flex;flex-direction:column;gap:10px}
-.link{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;gap:8px;padding:10px;border-radius:var(--r2);background:var(--bg);border:1px solid var(--line);transition:border-color var(--t)}
+.link{display:grid;grid-template-columns:minmax(0,1fr) 110px 76px auto;gap:8px;padding:10px;border-radius:var(--r2);background:var(--bg);border:1px solid var(--line);transition:border-color var(--t)}
 .link:hover{border-color:var(--line2)}
-.link .url{grid-column:1/3}
-.f{display:flex;flex-direction:column;gap:4px}.f label{font-size:11.5px;color:var(--mut);font-weight:600;letter-spacing:.02em}
-input{height:36px;padding:0 11px;border-radius:8px;border:1px solid var(--line);background:var(--panel);transition:border-color var(--t),background var(--t);width:100%;font-size:14px}
+.link .url{grid-column:1/4}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}.f label{font-size:11.5px;color:var(--mut);font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:6px}
+.tag{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:var(--panel3);color:var(--mut);letter-spacing:.03em}
+.tag.imagem{background:#2fbf7122;color:var(--green)}.tag.video{background:#f5b84a22;color:var(--amber)}.tag.youtube{background:#f0566a22;color:var(--red)}
+.inline{display:flex;gap:6px}
+input{height:36px;padding:0 11px;border-radius:8px;border:1px solid var(--line);background:var(--panel);transition:border-color var(--t),background var(--t);width:100%;font-size:14px;min-width:0}
 input:hover{border-color:var(--line2)}input:focus{border-color:var(--blue);background:#0e1420;outline:none}
 input.bad{border-color:var(--red)}
-.acts{grid-row:1/3;grid-column:3;display:flex;flex-direction:column;gap:4px;justify-content:center}
-.ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--mut);transition:background var(--t),color var(--t)}
+.acts{grid-row:1/3;grid-column:4;display:flex;flex-direction:column;gap:4px;justify-content:center}
+.ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--mut);transition:background var(--t),color var(--t);flex:none}
 .ico:hover{background:var(--panel3);color:var(--txt)}.ico.del:hover{background:#f0566a22;color:var(--red)}.ico:disabled{opacity:.25;pointer-events:none}
+.ico.box2{width:36px;height:36px;border:1px solid var(--line);background:var(--panel)}
 .ico svg{width:16px;height:16px}
 .vazio-l{padding:22px;text-align:center;color:var(--mut2);font-size:13.5px;border:1px dashed var(--line);border-radius:var(--r2)}
 .add{margin:0 12px 12px;width:calc(100% - 24px);justify-content:center;border-style:dashed;background:transparent;color:var(--mut)}
 .add:hover{color:var(--txt);border-color:var(--blue);background:#4f8cff0f}
 .dica{color:var(--mut);font-size:13px;margin-top:14px}
-/* modal */
+/* modais */
 .modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(3,5,9,.7);backdrop-filter:blur(6px);animation:fade .2s ease}
 @keyframes fade{from{opacity:0}}
-.box{width:min(760px,92vw);background:var(--panel);border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.6);padding:22px;animation:surge .22s ease}
-.box h3{font-size:17px;margin-bottom:4px}.box p{color:var(--mut);font-size:13.5px;margin-bottom:14px}
+.box{width:min(820px,94vw);max-height:92vh;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.6);padding:22px;animation:surge .22s ease}
+.box.larga{width:min(1040px,94vw)}
+.box-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}.box-h>div{margin-right:auto}
+.box h3{font-size:17px;margin-bottom:4px}.box p{color:var(--mut);font-size:13.5px}
 textarea{width:100%;height:46vh;resize:vertical;padding:14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font:13px/1.55 ui-monospace,"Cascadia Code",Consolas,monospace;tab-size:2}
 textarea:focus{outline:none;border-color:var(--blue)}
-.box-f{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}.box-f .btn:first-child{margin-right:auto}
+.box-f{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:14px}.box-f .esq{margin-right:auto;display:flex;gap:10px;flex-wrap:wrap}
+/* biblioteca de midia */
+.drop{border:1.5px dashed var(--line2);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;transition:border-color var(--t),background var(--t);margin-bottom:14px}
+.drop.sobre{border-color:var(--blue);background:#4f8cff10}
+.drop svg{width:30px;height:30px;color:var(--blue);flex:none}.drop div{margin-right:auto}.drop b{display:block;font-size:14px}.drop span{font-size:12.5px;color:var(--mut)}
+.envios{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.envio{display:grid;grid-template-columns:minmax(0,1fr) 120px 56px;gap:10px;align-items:center;font-size:12.5px;color:var(--mut)}
+.envio span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.envio .pb{height:6px;border-radius:99px;background:var(--panel3);overflow:hidden}
+.envio .pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s}
+.envio.err{color:var(--red)}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;overflow:auto;padding:2px;min-height:120px}
+.mid{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden;text-align:left;transition:border-color var(--t),transform var(--t)}
+.mid:hover{border-color:var(--line2)}.escolher .mid{cursor:pointer}.escolher .mid:hover{border-color:var(--blue);transform:translateY(-2px)}
+.mid .th{aspect-ratio:16/9;background:#05070b;display:grid;place-items:center;overflow:hidden}
+.mid .th img,.mid .th video{width:100%;height:100%;object-fit:cover;display:block}
+.mid .in{padding:8px 10px}.mid b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mid small{font-size:11.5px;color:var(--mut)}
+.mid .uso{position:absolute;top:8px;left:8px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(7,9,14,.85);color:var(--green)}
+.mid .apagar{position:absolute;top:6px;right:6px;background:rgba(7,9,14,.85)}
+.vazio-m{grid-column:1/-1;padding:30px;text-align:center;color:var(--mut2);font-size:13.5px}
 /* aviso */
-#toast{position:fixed;left:50%;bottom:28px;z-index:30;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 18px;border-radius:12px;background:var(--panel3);border:1px solid var(--line2);box-shadow:var(--sh);font-weight:600;font-size:14px;transition:opacity .22s,transform .22s}
+#toast{position:fixed;left:50%;bottom:28px;z-index:30;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 18px;border-radius:12px;background:var(--panel3);border:1px solid var(--line2);box-shadow:var(--sh);font-weight:600;font-size:14px;transition:opacity .22s,transform .22s;max-width:90vw}
 #toast.on{opacity:1;transform:translate(-50%,0)}#toast.ok{border-color:#2fbf7166}#toast.err{border-color:#f0566a88}
 
 /* ---------- exibicao ---------- */
 #display{position:fixed;inset:0;background:#000;display:grid;gap:4px;padding:4px}
 #display.g1{grid-template:1fr/1fr}#display.g2{grid-template:1fr/1fr 1fr}
 #display.g3{grid-template:1fr 1fr/1.25fr 1fr}#display.g3 .cell:first-child{grid-row:span 2}#display.g4{grid-template:1fr 1fr/1fr 1fr}
-.cell{position:relative;overflow:hidden;border-radius:8px;background:#0a0d13}
-.cell iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;opacity:0;transition:opacity .5s ease}
-.cell iframe.on{opacity:1}
+#display.g1{padding:0}
+.cell{position:relative;overflow:hidden;border-radius:8px;background:#05070b;min-width:0;min-height:0}
+#display.g1 .cell{border-radius:0}
+/* cada "slot" ocupa a area; dois por area para o proximo carregar escondido e entrar com fade */
+.slot{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity .5s ease}
+.slot.on{opacity:1}
+/* pagina: desenhada numa tela virtual (ex.: 1920x1080) e reduzida por transform, como se a area fosse uma TV inteira */
+.slot iframe{position:absolute;left:0;top:0;border:0;background:#fff;transform-origin:0 0}
+.slot img,.slot video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+#display.esticar .slot img,#display.esticar .slot video{object-fit:fill}
 .ph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;color:var(--mut2);font-size:14px;background:repeating-linear-gradient(135deg,#0b0f16 0 14px,#0d121a 14px 28px)}
 .ph svg{width:34px;height:34px;opacity:.6}
-.bar{position:absolute;left:0;right:0;bottom:0;padding:10px 14px 12px;background:linear-gradient(transparent,rgba(3,5,9,.92) 45%);display:flex;align-items:center;gap:10px;font-size:13px;opacity:0;transition:opacity .25s ease;pointer-events:none}
+.bar{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:10px 14px 12px;background:linear-gradient(transparent,rgba(3,5,9,.92) 45%);display:flex;align-items:center;gap:10px;font-size:13px;opacity:0;transition:opacity .25s ease;pointer-events:none}
 .bar b{font-weight:650;white-space:nowrap}.bar span{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
-.bar em{font-style:normal;color:var(--mut);font-variant-numeric:tabular-nums}
-.prog{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--blue),var(--green))}
-.fab{position:fixed;top:16px;right:16px;z-index:10;display:flex;gap:8px;opacity:0;transition:opacity .25s ease}
+.bar em{font-style:normal;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.prog{position:absolute;left:0;bottom:0;z-index:2;height:3px;width:0;background:linear-gradient(90deg,var(--blue),var(--green))}
+.fab{position:fixed;top:16px;right:16px;z-index:10;display:flex;gap:8px;opacity:0;transition:opacity .25s ease;pointer-events:none}
 .fab button{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(17,23,34,.88);border:1px solid var(--line2);backdrop-filter:blur(8px);box-shadow:var(--sh);transition:background var(--t),transform var(--t)}
 .fab button:hover{background:var(--panel3);transform:translateY(-1px)}.fab svg{width:19px;height:19px}
 #display.ativo .bar,#display.ativo~.fab{opacity:1}#display.ativo~.fab{pointer-events:auto}
-.fab{pointer-events:none}
 /* iframe engole o mousemove: esta camada invisivel pega o 1o movimento em repouso e sai da frente enquanto a tela esta "ativa" */
 #vigia{position:fixed;inset:0;z-index:5}#display.ativo~#vigia{pointer-events:none}
 #display:not(.ativo){cursor:none}
+/* area em uso (login, digitacao): rotacao pausada */
+.pausa{position:absolute;top:10px;left:10px;z-index:3;display:none;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;background:rgba(245,184,74,.92);color:#1d1403;font-size:12.5px;font-weight:700;box-shadow:var(--sh);pointer-events:none}
+.cell.pausado .pausa{display:flex}.cell.pausado{outline:2px solid #f5b84a;outline-offset:-2px}
 
-@media (max-width:980px){.layouts{grid-template-columns:repeat(2,minmax(0,1fr))}.areas{grid-template-columns:1fr}.top{flex-wrap:wrap;padding:14px 16px}.wrap{padding:20px 16px}}
+@media (max-width:980px){.layouts{grid-template-columns:repeat(2,minmax(0,1fr))}.areas,.enq{grid-template-columns:1fr}.top{flex-wrap:wrap;padding:14px 16px}.wrap{padding:20px 16px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -109,15 +153,26 @@ textarea:focus{outline:none;border-color:var(--blue)}
 
 <section id="settings" class="hidden">
   <header class="top">
-    <div class="brand"><div class="logo"><i></i><i></i><i></i></div><div><h1>Painel Rotativo</h1><p>Telas de NOC com links que se revezam</p></div></div>
+    <div class="brand"><div class="logo"><i></i><i></i><i></i></div><div><h1>Painel Rotativo</h1><p>Telas de NOC com links, imagens e vídeos que se revezam</p></div></div>
+    <button class="btn ghost" id="b-midia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>Mídia</button>
     <button class="btn ghost" id="b-io"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Importar / Exportar</button>
     <button class="btn primary" id="b-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v5h8V3M7 21v-7h10v7"/></svg>Salvar</button>
     <button class="btn go" id="b-start"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>Iniciar exibição</button>
   </header>
   <main class="wrap">
     <section class="sec"><h2>Layout da tela</h2><div class="layouts" id="layouts"></div></section>
-    <section class="sec"><h2>Links de cada área</h2><div class="areas" id="areas"></div>
-      <p class="dica">Cada área troca sozinha de link no tempo definido em cada um (ex.: 30s, 5m, 1h ou 1:30). Links do YouTube (vídeo, shorts, playlist ou ao vivo) viram player automático, sem som e em loop. Sites que bloqueiam exibição em iframe (cabeçalho X-Frame-Options) aparecem em branco: libere o embed no próprio sistema.</p></section>
+    <section class="sec"><h2>Enquadramento</h2>
+      <div class="enq">
+        <div class="card"><h4>Cada área se comporta como uma tela de</h4>
+          <p>A página é desenhada nesse tamanho e reduzida para caber na área: o dashboard aparece inteiro, como em tela cheia, em vez de se espremer e cortar.</p>
+          <div class="seg" id="seg-res"></div></div>
+        <div class="card"><h4>Encaixe na área</h4>
+          <p>Vale para páginas, imagens e vídeos.</p>
+          <div class="seg" id="seg-aj"></div></div>
+      </div>
+    </section>
+    <section class="sec"><h2>Conteúdo de cada área</h2><div class="areas" id="areas"></div>
+      <p class="dica">Cada item fica na tela pelo tempo definido (30s, 5m, 1h ou 1:30) e passa para o próximo. Use um link (Zabbix, Grafana, YouTube…) ou o botão de mídia para enviar e escolher imagens e vídeos. Vídeos do YouTube e enviados tocam sem som e em loop. Sites que bloqueiam exibição em iframe (X-Frame-Options) aparecem em branco: libere o embed no próprio sistema.</p></section>
   </main>
 </section>
 
@@ -128,12 +183,33 @@ textarea:focus{outline:none;border-color:var(--blue)}
   <button id="b-back" title="Configurar (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </div>
 
+<!-- importar / exportar -->
 <div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-t">
   <div class="box">
-    <h3 id="m-t">Importar / Exportar configuração</h3>
-    <p>Este é o config.json atual. Copie para guardar um backup, ou cole outro JSON e clique em Aplicar.</p>
-    <textarea id="m-json" spellcheck="false"></textarea>
-    <div class="box-f"><button class="btn ghost" id="m-copy">Copiar</button><button class="btn" id="m-cancel">Cancelar</button><button class="btn primary" id="m-apply">Aplicar e salvar</button></div>
+    <div class="box-h"><div><h3 id="m-t">Importar / Exportar configuração</h3>
+      <p>Baixe um backup ou leve a configuração para outro servidor. Para importar, cole ou abra um arquivo .yml ou .json e clique em Aplicar.</p></div>
+      <div class="seg" id="m-fmt"><button data-f="yaml" class="on">YAML</button><button data-f="json">JSON</button></div></div>
+    <textarea id="m-txt" spellcheck="false"></textarea>
+    <div class="box-f">
+      <div class="esq"><button class="btn ghost sm" id="m-down">Baixar arquivo</button><button class="btn ghost sm" id="m-open">Abrir arquivo…</button><button class="btn ghost sm" id="m-copy">Copiar</button></div>
+      <button class="btn" id="m-cancel">Cancelar</button><button class="btn primary" id="m-apply">Aplicar e salvar</button></div>
+    <input type="file" id="m-file" accept=".yml,.yaml,.json,text/yaml,application/json" class="hidden">
+  </div>
+</div>
+
+<!-- biblioteca de midia -->
+<div class="modal hidden" id="midia" role="dialog" aria-modal="true" aria-labelledby="md-t">
+  <div class="box larga">
+    <div class="box-h"><div><h3 id="md-t">Mídia</h3><p id="md-sub">Imagens e vídeos guardados no servidor do painel.</p></div>
+      <button class="ico" id="md-x" title="Fechar (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <label class="drop" id="md-drop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+      <div><b>Arraste imagens ou vídeos aqui</b><span>PNG, JPG, GIF, WEBP, SVG, MP4, WEBM. Vários de uma vez.</span></div>
+      <span class="btn primary sm">Escolher arquivos</span>
+      <input type="file" id="md-file" multiple accept="image/*,video/mp4,video/webm,video/ogg,video/quicktime" class="hidden">
+    </label>
+    <div class="envios" id="md-envios"></div>
+    <div class="grade" id="md-grade"></div>
   </div>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -144,58 +220,79 @@ textarea:focus{outline:none;border-color:var(--blue)}
 const $ = s => document.querySelector(s);
 const NOMES = ["Uma área", "Duas áreas", "Três áreas", "Quatro áreas"];
 const SUB = ["Tela inteira", "Lado a lado", "1 grande + 2 empilhadas", "Grade 2 × 2"];
+const RES = [["auto", "Tela da TV", "a resolução atual"], ["1280x720", "HD", "1280 × 720"], ["1920x1080", "Full HD", "1920 × 1080"],
+             ["2560x1440", "QHD", "2560 × 1440"], ["3840x2160", "4K", "3840 × 2160"]];
+const AJ = [["conter", "Conter", "inteiro, sem cortar"], ["esticar", "Esticar", "preenche a área toda"]];
 const ICO = {
   up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg>',
   down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
   del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  midia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>',
   vazio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="color:#ffffffaa"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
 };
-const padrao = () => ({layout: 4, mode: "settings", quadrants: [0, 1, 2, 3].map(() => ({links: []}))});
+const padrao = () => ({layout: 4, mode: "settings", tela: {resolucao: "auto", ajuste: "conter"}, quadrants: [0, 1, 2, 3].map(() => ({links: []}))});
 let cfg = padrao();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
-const urlOk = u => /^https?:\/\/\S+$/i.test(u);
 const temLinks = c => c.quadrants.slice(0, c.layout).some(q => q.links.some(l => urlOk(l.url)));
+const bytes = n => n < 2 ** 20 ? (n / 1024).toFixed(0) + " KB" : n < 2 ** 30 ? (n / 2 ** 20).toFixed(1) + " MB" : (n / 2 ** 30).toFixed(2) + " GB";
+const ehYoutube = u => /^https?:\/\/([\w-]+\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\//i.test(u);
+const rotulo = u => !u ? "" : ehYoutube(u) ? "youtube" : tipoMidia(u);
+const TAG = {youtube: "YouTube", imagem: "Imagem", video: "Vídeo", pagina: "Página"};
 
 function toast(msg, tipo = "ok") {
   const t = $("#toast"); t.textContent = msg; t.className = "on " + tipo;
-  clearTimeout(toast.h); toast.h = setTimeout(() => t.className = "", 2600);
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.className = "", tipo === "err" ? 5000 : 2600);
 }
 
-async function salvar(mode) {
-  cfg.mode = mode;
-  const r = await fetch("api/config", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(cfg)});
-  const txt = await r.text();
+// resposta da API: sempre tenta JSON e explica quando vem outra coisa (proxy, endereco errado)
+async function api(caminho, opcoes) {
+  const r = await fetch(caminho, opcoes), txt = await r.text();
   let d; try { d = JSON.parse(txt); }
   catch { throw new Error(`o servidor respondeu HTTP ${r.status} sem JSON (proxy ou endereço errado?): ${txt.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 90)}`); }
   if (!r.ok) throw new Error(d.erro || "HTTP " + r.status);
-  cfg = d;
+  return d;
+}
+async function salvar(mode) {
+  cfg.mode = mode;
+  cfg = await api("api/config", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(cfg)});
 }
 
 /* ---------- configuracao ---------- */
 function telaConfig() {
   pararExibicao();
   $("#display").classList.add("hidden"); $("#fab").classList.add("hidden"); $("#vigia").classList.add("hidden"); $("#settings").classList.remove("hidden");
-  desenharLayouts(); desenharAreas();
+  desenharLayouts(); desenharEnquadramento(); desenharAreas();
 }
 
 function desenharLayouts() {
   $("#layouts").innerHTML = [1, 2, 3, 4].map(n => `<button class="layout ${cfg.layout === n ? "on" : ""}" data-n="${n}" aria-pressed="${cfg.layout === n}">
     <div class="mini l${n}">${"<i></i>".repeat(n)}</div><b>${NOMES[n - 1]}</b><span>${SUB[n - 1]}</span></button>`).join("");
 }
+function desenharEnquadramento() {
+  const seg = (lista, atual) => lista.map(([v, n, s]) => `<button data-v="${v}" class="${atual === v ? "on" : ""}" aria-pressed="${atual === v}">${n}<small>${s}</small></button>`).join("");
+  $("#seg-res").innerHTML = seg(RES, cfg.tela.resolucao);
+  $("#seg-aj").innerHTML = seg(AJ, cfg.tela.ajuste);
+}
+$("#seg-res").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) { cfg.tela.resolucao = b.dataset.v; desenharEnquadramento(); } });
+$("#seg-aj").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) { cfg.tela.ajuste = b.dataset.v; desenharEnquadramento(); } });
 
 function desenharAreas() {
   $("#areas").innerHTML = cfg.quadrants.slice(0, cfg.layout).map((q, a) => `<article class="area">
-    <div class="area-h"><span class="num">${a + 1}</span><h3>Área ${a + 1}</h3><small>${q.links.length} link${q.links.length === 1 ? "" : "s"}</small></div>
+    <div class="area-h"><span class="num">${a + 1}</span><h3>Área ${a + 1}</h3><small>${q.links.length} ${q.links.length === 1 ? "item" : "itens"}</small></div>
     <div class="links">${q.links.length ? q.links.map((l, i) => `<div class="link" data-a="${a}" data-i="${i}">
         <div class="f"><label>Nome (opcional)</label><input data-k="title" value="${esc(l.title)}" placeholder="Ex.: Zabbix"></div>
         <div class="f"><label>Tempo na tela</label><input data-k="duration" value="${mostrarTempo(l.duration)}" placeholder="30s, 5m, 1:30" title="Aceita 30, 30s, 5m, 1h30m ou 1:30 (mínimo 5 s)"></div>
+        <div class="f"><label>Zoom</label><input data-k="zoom" value="${l.zoom || 100}%" title="25% a 400%: aumenta ou diminui a página, imagem ou vídeo nesta área (fica salvo)"></div>
         <div class="acts"><button class="ico" data-op="up" title="Subir" ${i ? "" : "disabled"}>${ICO.up}</button>
           <button class="ico" data-op="down" title="Descer" ${i < q.links.length - 1 ? "" : "disabled"}>${ICO.down}</button>
           <button class="ico del" data-op="del" title="Remover">${ICO.del}</button></div>
-        <div class="f url"><label>URL</label><input data-k="url" value="${esc(l.url)}" placeholder="http://192.168.0.10/zabbix" class="${l.url && !urlOk(l.url) ? "bad" : ""}"></div>
-      </div>`).join("") : `<div class="vazio-l">Nenhum link nesta área ainda.</div>`}</div>
-    <button class="btn add" data-add="${a}">${ICO.plus}Adicionar link</button></article>`).join("");
+        <div class="f url"><label>Link ou mídia ${l.url ? `<span class="tag ${rotulo(l.url)}">${TAG[rotulo(l.url)]}</span>` : ""}</label>
+          <div class="inline"><input data-k="url" value="${esc(l.url)}" placeholder="http://192.168.0.10/zabbix  ou escolha uma mídia →" class="${l.url && !urlOk(l.url) ? "bad" : ""}">
+          <button class="ico box2" data-op="midia" title="Escolher ou enviar imagem / vídeo">${ICO.midia}</button></div></div>
+      </div>`).join("") : `<div class="vazio-l">Nada nesta área ainda.</div>`}</div>
+    <button class="btn add" data-add="${a}">${ICO.plus}Adicionar item</button></article>`).join("");
 }
 
 $("#layouts").addEventListener("click", e => {
@@ -206,21 +303,29 @@ $("#areas").addEventListener("input", e => {
   const inp = e.target, row = inp.closest(".link"); if (!row) return;
   const l = cfg.quadrants[row.dataset.a].links[row.dataset.i], k = inp.dataset.k;
   if (k === "duration") { const s = lerTempo(inp.value); inp.classList.toggle("bad", s == null || s < 5); if (s >= 5) l.duration = Math.min(86400, s); return; }
+  if (k === "zoom") { const z = parseInt(inp.value, 10); const ok = z >= 25 && z <= 400; inp.classList.toggle("bad", !ok); if (ok) l.zoom = z; return; }
   l[k] = inp.value;
   if (k === "url") inp.classList.toggle("bad", !!inp.value && !urlOk(inp.value.trim()));
 });
-$("#areas").addEventListener("focusout", e => {  // ao sair do campo, o tempo aparece no formato padrao (ex.: "90" -> "1m 30s")
-  const inp = e.target; if (inp.dataset.k !== "duration") return;
-  const row = inp.closest(".link"); inp.value = mostrarTempo(cfg.quadrants[row.dataset.a].links[row.dataset.i].duration); inp.classList.remove("bad");
+$("#areas").addEventListener("focusout", e => {
+  const inp = e.target, row = inp.closest(".link"); if (!row) return;
+  const l = cfg.quadrants[row.dataset.a].links[row.dataset.i];
+  if (inp.dataset.k === "duration") { inp.value = mostrarTempo(l.duration); inp.classList.remove("bad"); }  // "90" -> "1m 30s"
+  if (inp.dataset.k === "zoom") { inp.value = (l.zoom || 100) + "%"; inp.classList.remove("bad"); }
+  if (inp.dataset.k === "url") {  // atualiza a etiqueta (Página / YouTube / Imagem / Vídeo)
+    const lab = row.querySelector(".url label"), r = rotulo(l.url.trim());
+    lab.innerHTML = "Link ou mídia " + (r ? `<span class="tag ${r}">${TAG[r]}</span>` : "");
+  }
 });
 $("#areas").addEventListener("click", e => {
   const add = e.target.closest("[data-add]");
   if (add) {
-    const a = Number(add.dataset.add); cfg.quadrants[a].links.push({title: "", url: "", duration: 15}); desenharAreas();
+    const a = Number(add.dataset.add); cfg.quadrants[a].links.push({title: "", url: "", duration: 15, zoom: 100}); desenharAreas();
     const ins = document.querySelectorAll(`.link[data-a="${a}"] input[data-k="url"]`); ins[ins.length - 1]?.focus(); return;
   }
   const op = e.target.closest("[data-op]"); if (!op) return;
   const row = op.closest(".link"), ls = cfg.quadrants[row.dataset.a].links, i = Number(row.dataset.i);
+  if (op.dataset.op === "midia") return abrirMidia(ls[i]);
   if (op.dataset.op === "del") ls.splice(i, 1);
   else { const j = op.dataset.op === "up" ? i - 1 : i + 1; [ls[i], ls[j]] = [ls[j], ls[i]]; }
   desenharAreas();
@@ -231,68 +336,254 @@ function invalidos() { return cfg.quadrants.slice(0, cfg.layout).flatMap(q => q.
 
 $("#b-save").onclick = async () => {
   limpar(); const ruins = invalidos();
-  try { await salvar("settings"); desenharAreas(); toast(ruins ? `Salvo. ${ruins} URL(s) inválida(s) serão ignoradas na exibição.` : "Configuração salva", ruins ? "err" : "ok"); }
+  try { await salvar("settings"); desenharAreas(); toast(ruins ? `Salvo. ${ruins} item(ns) com link inválido serão ignorados na exibição.` : "Configuração salva", ruins ? "err" : "ok"); }
   catch (e) { toast("Não salvou: " + e.message, "err"); }
 };
 $("#b-start").onclick = async () => {
   limpar();
-  if (!temLinks(cfg)) return toast("Cadastre ao menos um link com URL http(s) válida", "err");
+  if (!temLinks(cfg)) return toast("Cadastre ao menos um link http(s) ou uma mídia", "err");
   try { await salvar("display"); telaExibicao(); } catch (e) { toast("Não salvou: " + e.message, "err"); }
 };
 
-/* importar / exportar */
-$("#b-io").onclick = () => { $("#m-json").value = JSON.stringify(cfg, null, 2); $("#modal").classList.remove("hidden"); $("#m-json").focus(); };
-const fechar = () => $("#modal").classList.add("hidden");
-$("#m-cancel").onclick = fechar;
-$("#modal").addEventListener("click", e => { if (e.target.id === "modal") fechar(); });
-$("#m-copy").onclick = async () => { try { await navigator.clipboard.writeText($("#m-json").value); toast("Copiado"); } catch { $("#m-json").select(); toast("Selecionado: use Ctrl+C"); } };
+/* ---------- importar / exportar (YAML ou JSON) ---------- */
+let formato = "yaml";
+const exportavel = () => ({layout: cfg.layout, mode: cfg.mode, tela: cfg.tela, quadrants: cfg.quadrants});
+const textoExport = () => formato === "yaml" ? "# Painel Rotativo: configuração\n" + paraYaml(exportavel()) + "\n" : JSON.stringify(exportavel(), null, 2);
+function mostrarFormato() {
+  document.querySelectorAll("#m-fmt button").forEach(b => b.classList.toggle("on", b.dataset.f === formato));
+  $("#m-txt").value = textoExport();
+}
+const abrirModal = id => { $(id).classList.remove("hidden"); };
+const fecharModais = () => { document.querySelectorAll(".modal").forEach(m => m.classList.add("hidden")); escolhendo = null; };
+$("#b-io").onclick = () => { mostrarFormato(); abrirModal("#modal"); $("#m-txt").focus(); };
+$("#m-fmt").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b) { formato = b.dataset.f; mostrarFormato(); } });
+$("#m-cancel").onclick = fecharModais;
+document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) fecharModais(); }));
+$("#m-copy").onclick = async () => { try { await navigator.clipboard.writeText($("#m-txt").value); toast("Copiado"); } catch { $("#m-txt").select(); toast("Selecionado: use Ctrl+C"); } };
+$("#m-down").onclick = () => {
+  const ext = formato === "yaml" ? "yml" : "json", a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([$("#m-txt").value], {type: formato === "yaml" ? "text/yaml" : "application/json"}));
+  a.download = `painel-rotativo-${new Date().toISOString().slice(0, 10)}.${ext}`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+$("#m-open").onclick = () => $("#m-file").click();
+$("#m-file").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  $("#m-txt").value = await f.text(); e.target.value = "";
+  formato = /\.json$/i.test(f.name) ? "json" : "yaml";
+  document.querySelectorAll("#m-fmt button").forEach(b => b.classList.toggle("on", b.dataset.f === formato));
+  toast(`"${f.name}" carregado: confira e clique em Aplicar`);
+};
 $("#m-apply").onclick = async () => {
-  let novo; try { novo = JSON.parse($("#m-json").value); } catch (e) { return toast("JSON inválido: " + e.message, "err"); }
+  let novo; try { novo = lerConfigTexto($("#m-txt").value); } catch (e) { return toast("Arquivo inválido: " + e.message, "err"); }
+  if (!novo || typeof novo !== "object" || Array.isArray(novo)) return toast("Arquivo inválido: esperado layout, tela e quadrants", "err");
   const antes = cfg; cfg = novo;
-  try { await salvar("settings"); fechar(); telaConfig(); toast("Configuração importada"); }
+  try { await salvar("settings"); fecharModais(); telaConfig(); toast("Configuração importada"); }
   catch (e) { cfg = antes; toast("Não aplicou: " + e.message, "err"); }
 };
 
+/* ---------- biblioteca de midia ---------- */
+let escolhendo = null;  // item (link) que vai receber a midia escolhida; null = so gerenciar
+async function abrirMidia(item = null) {
+  escolhendo = item;
+  $("#md-sub").textContent = item ? "Clique numa imagem ou vídeo para usar neste item, ou envie um novo." : "Imagens e vídeos guardados no servidor do painel.";
+  $("#midia .box").classList.toggle("escolher", !!item);
+  $("#md-envios").innerHTML = "";
+  abrirModal("#midia"); await listarMidia();
+}
+$("#b-midia").onclick = () => abrirMidia();
+$("#md-x").onclick = fecharModais;
+
+let biblioteca = [];
+async function listarMidia() {
+  try { biblioteca = await api("api/midia", {cache: "no-store"}); } catch (e) { toast("Não listou a mídia: " + e.message, "err"); }
+  const usadas = new Set(cfg.quadrants.flatMap(q => q.links.map(l => l.url)));
+  $("#md-grade").innerHTML = biblioteca.length ? biblioteca.map(m => `<div class="mid" data-url="${esc(m.url)}" tabindex="0" role="button">
+      <div class="th">${m.tipo === "video" ? `<video src="${esc(m.url)}#t=1" muted preload="metadata"></video>` : `<img src="${esc(m.url)}" alt="" loading="lazy">`}</div>
+      ${usadas.has(m.url) ? `<span class="uso">em uso</span>` : ""}
+      <button class="ico apagar del" data-apagar="${esc(m.nome)}" title="Apagar do servidor">${ICO.del}</button>
+      <div class="in"><b title="${esc(m.nome)}">${esc(m.nome.replace(/^\d+-/, ""))}</b><small>${m.tipo === "video" ? "Vídeo" : "Imagem"} · ${bytes(m.tamanho)}</small></div></div>`).join("")
+    : `<div class="vazio-m">Nenhuma mídia ainda. Envie imagens ou vídeos acima.</div>`;
+}
+
+// duracao do video (para preencher o "tempo na tela" sozinho)
+const duracaoVideo = url => new Promise(ok => {
+  const v = document.createElement("video"); v.preload = "metadata"; v.muted = true;
+  v.onloadedmetadata = () => ok(isFinite(v.duration) ? Math.round(v.duration) : null); v.onerror = () => ok(null);
+  setTimeout(() => ok(null), 8000); v.src = url;
+});
+async function usarMidia(url) {
+  const item = escolhendo; if (!item) return;
+  item.url = url;
+  if (!item.title) item.title = decodeURIComponent(url.split("/").pop()).replace(/^\d+-/, "").replace(/\.\w+$/, "").replace(/-/g, " ");
+  if (tipoMidia(url) === "video") { const s = await duracaoVideo(url); if (s) item.duration = Math.min(86400, Math.max(5, s)); }
+  fecharModais(); desenharAreas();
+  toast(tipoMidia(url) === "video" ? `Vídeo escolhido: tempo na tela = duração do vídeo (${mostrarTempo(item.duration)}). Clique em Salvar.` : "Imagem escolhida. Clique em Salvar.");
+}
+$("#md-grade").addEventListener("click", async e => {
+  const ap = e.target.closest("[data-apagar]");
+  if (ap) {
+    e.stopPropagation();
+    const nome = ap.dataset.apagar, url = "midia/" + nome;
+    const uso = cfg.quadrants.flatMap(q => q.links).filter(l => l.url === url).length;
+    if (ap.dataset.confirma !== "1") {  // 2 cliques para apagar, sem caixa de dialogo do navegador
+      ap.dataset.confirma = "1"; ap.style.color = "var(--red)";
+      return toast(uso ? `Em uso em ${uso} item(ns). Clique de novo para apagar mesmo assim.` : "Clique de novo para apagar do servidor.", "err");
+    }
+    try { await api("api/midia/" + encodeURIComponent(nome), {method: "DELETE"}); toast("Apagado"); } catch (er) { toast("Não apagou: " + er.message, "err"); }
+    return listarMidia();
+  }
+  const m = e.target.closest(".mid"); if (m && escolhendo) usarMidia(m.dataset.url);
+});
+$("#md-grade").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.classList.contains("mid") && escolhendo) usarMidia(e.target.dataset.url); });
+
+// envio com barra de progresso (XHR: o fetch nao informa progresso de upload)
+function enviar(arquivo) {
+  const linha = document.createElement("div"); linha.className = "envio";
+  linha.innerHTML = `<span>${esc(arquivo.name)}</span><div class="pb"><i></i></div><em>0%</em>`;
+  $("#md-envios").appendChild(linha);
+  return new Promise(ok => {
+    const x = new XMLHttpRequest();
+    x.open("POST", "api/midia?nome=" + encodeURIComponent(arquivo.name));
+    x.upload.onprogress = ev => { if (ev.lengthComputable) { const p = Math.round(ev.loaded / ev.total * 100); linha.querySelector("i").style.width = p + "%"; linha.querySelector("em").textContent = p + "%"; } };
+    x.onload = () => {
+      let d = {}; try { d = JSON.parse(x.responseText); } catch {}
+      if (x.status === 200) { linha.querySelector("em").textContent = "ok"; setTimeout(() => linha.remove(), 1500); ok(d); }
+      else { linha.classList.add("err"); linha.querySelector("em").textContent = "erro"; linha.querySelector("span").textContent = `${arquivo.name}: ${d.erro || "HTTP " + x.status}`; ok(null); }
+    };
+    x.onerror = () => { linha.classList.add("err"); linha.querySelector("em").textContent = "erro"; ok(null); };
+    x.send(arquivo);
+  });
+}
+async function enviarVarios(lista) {
+  const feitos = [];
+  for (const f of lista) feitos.push(await enviar(f));  // um por vez: nao satura a rede da TV
+  await listarMidia();
+  const bons = feitos.filter(Boolean);
+  if (escolhendo && bons.length === 1) usarMidia(bons[0].url);  // escolhendo para um item e mandou um arquivo: ja usa
+  else if (bons.length) toast(`${bons.length} arquivo(s) enviado(s)`);
+}
+$("#md-file").onchange = e => { enviarVarios([...e.target.files]); e.target.value = ""; };
+const drop = $("#md-drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("sobre"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("sobre"); }));
+drop.addEventListener("drop", e => enviarVarios([...e.dataTransfer.files]));
+
 /* ---------- exibicao ---------- */
-let timers = [];
-function pararExibicao() { timers.forEach(clearTimeout); timers = []; $("#display").innerHTML = ""; }
+let areas = [];  // um controlador por area (rotacao, pausa)
+function pararExibicao() { areas.forEach(a => a.parar()); areas = []; $("#display").innerHTML = ""; }
+
+// tamanho da "tela virtual" de cada area: a propria TV (auto) ou a resolucao escolhida.
+// O zoom do item divide a tela virtual: 125% = pagina desenhada em uma tela 1,25x menor, logo tudo maior.
+const telaVirtual = () => cfg.tela.resolucao === "auto" ? [innerWidth, innerHeight] : cfg.tela.resolucao.split("x").map(Number);
+function enquadrar(cell) {
+  const w = cell.clientWidth, h = cell.clientHeight; if (!w || !h) return;
+  const [bw, bh] = telaVirtual();
+  cell.querySelectorAll(".slot").forEach(slot => {
+    const z = (Number(slot.dataset.zoom) || 100) / 100, f = slot.querySelector("iframe"), m = slot.querySelector("img, video");
+    if (f) {
+      const vw = Math.round(bw / z), vh = Math.round(bh / z), e = encaixe(w, h, vw, vh, cfg.tela.ajuste);
+      f.style.width = vw + "px"; f.style.height = vh + "px";
+      f.style.transform = `translate(${e.ox}px, ${e.oy}px) scale(${e.sx}, ${e.sy})`;
+    }
+    if (m) m.style.transform = z === 1 ? "" : `scale(${z})`;
+  });
+}
+const observador = new ResizeObserver(ents => ents.forEach(en => enquadrar(en.target)));
+
+// conteudo de um slot conforme o tipo: pagina (iframe na tela virtual), imagem ou video
+function preencher(slot, l) {
+  slot.dataset.zoom = l.zoom || 100;
+  if (slot.dataset.url === l.url) return enquadrar(slot.parentElement);
+  slot.dataset.url = l.url;
+  const tipo = tipoMidia(l.url);
+  if (tipo === "imagem") slot.innerHTML = `<img src="${esc(l.url)}" alt="">`;
+  else if (tipo === "video") {
+    slot.innerHTML = `<video src="${esc(l.url)}" autoplay muted loop playsinline preload="auto"></video>`;
+    slot.querySelector("video").play().catch(() => {});
+  } else {
+    // allow: autoplay/tela cheia para players (YouTube). O referrer vai so a origem: o YouTube recusa o embed sem ele (erro 153)
+    const f = document.createElement("iframe");
+    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"; f.allowFullscreen = true;
+    f.referrerPolicy = "strict-origin-when-cross-origin"; f.src = paraEmbed(l.url);
+    slot.replaceChildren(f);
+  }
+  enquadrar(slot.parentElement);
+}
+function esvaziar(slot) { slot.replaceChildren(); slot.dataset.url = ""; }  // para video/pagina escondidos
+
+const PAUSA_MAX = 5 * 60 * 1000;  // usando a area (login): rotacao parada; volta sozinha depois de 5 min
+function criarArea(cell, links) {
+  // dois slots: o proximo carrega escondido e entra com fade, sem tela branca na troca
+  cell.innerHTML = `<div class="slot"></div><div class="slot"></div><div class="pausa">⏸ Em uso: rotação pausada · clique fora da área para voltar</div>
+    <div class="bar"><b></b><span></span><em></em></div><div class="prog"></div>`;
+  observador.observe(cell);
+  const [s1, s2] = cell.querySelectorAll(".slot"), bar = cell.querySelector(".bar"), prog = cell.querySelector(".prog");
+  const rodar = links.length > 1;
+  let i = -1, atual = s2, timers = [], pausado = false, limite;
+  const limpar = () => { timers.forEach(clearTimeout); timers = []; };
+  const agendar = l => {  // barra de progresso, pre-carga 4 s antes e troca
+    prog.style.transition = "none"; prog.style.width = "0";
+    if (!rodar) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => { prog.style.transition = `width ${l.duration}s linear`; prog.style.width = "100%"; }));
+    timers.push(setTimeout(() => preencher(atual === s1 ? s2 : s1, links[(i + 1) % links.length]), Math.max(0, l.duration - 4) * 1000));
+    timers.push(setTimeout(passo, l.duration * 1000));
+  };
+  const passo = () => {
+    i = (i + 1) % links.length;
+    const l = links[i], prox = atual === s1 ? s2 : s1, saiu = atual;
+    preencher(prox, l);
+    const v = prox.querySelector("video"); if (v) { v.currentTime = 0; v.play().catch(() => {}); }  // video sempre do comeco
+    prox.classList.add("on"); if (prox !== saiu) saiu.classList.remove("on"); atual = prox;
+    // o que saiu de cena e descarregado depois do fade: video escondido nao fica tocando nem gastando CPU
+    if (rodar && saiu !== prox) timers.push(setTimeout(() => { if (saiu !== atual) esvaziar(saiu); }, 700));
+    bar.querySelector("b").textContent = l.title || (/^midia\//.test(l.url) ? l.url.slice(6).replace(/^\d+-/, "") : new URL(l.url).host);
+    bar.querySelector("span").textContent = l.url;
+    bar.querySelector("em").textContent = (rodar ? `${i + 1}/${links.length} · ${mostrarTempo(l.duration)}` : "") + ((l.zoom || 100) !== 100 ? ` · zoom ${l.zoom}%` : "");
+    agendar(l);
+  };
+  const area = {
+    cell,
+    pausar() {
+      if (pausado || !rodar) return;
+      pausado = true; limpar(); cell.classList.add("pausado");
+      prog.style.width = getComputedStyle(prog).width; prog.style.transition = "none";  // congela a barra
+      // o slot escondido pode estar pre-carregando o proximo: descarrega para nao gastar a TV
+      const outro = atual === s1 ? s2 : s1; if (outro !== atual) esvaziar(outro);
+      clearTimeout(limite); limite = setTimeout(() => area.retomar(), PAUSA_MAX);
+    },
+    retomar() {
+      if (!pausado) return;
+      pausado = false; clearTimeout(limite); cell.classList.remove("pausado");
+      agendar(links[i]);  // o item atual ganha o tempo inteiro de novo
+    },
+    parar() { limpar(); clearTimeout(limite); },
+  };
+  passo();
+  return area;
+}
 
 function telaExibicao() {
-  pararExibicao();
-  $("#settings").classList.add("hidden"); fechar();
-  const d = $("#display"); d.className = "g" + cfg.layout; $("#fab").classList.remove("hidden"); $("#vigia").classList.remove("hidden");
+  pararExibicao(); observador.disconnect();
+  $("#settings").classList.add("hidden"); fecharModais();
+  const d = $("#display"); d.className = `g${cfg.layout} ${cfg.tela.ajuste}`;
+  $("#fab").classList.remove("hidden"); $("#vigia").classList.remove("hidden");
   cfg.quadrants.slice(0, cfg.layout).forEach(q => {
     const links = q.links.filter(l => urlOk(l.url)), cell = document.createElement("div");
     cell.className = "cell"; d.appendChild(cell);
-    if (!links.length) { cell.innerHTML = `<div class="ph">${ICO.vazio}<span>Área sem links</span></div>`; return; }
-    // dois iframes: o proximo carrega escondido e entra com fade, sem tela branca na troca
-    // allow: autoplay/tela cheia para players (YouTube). O referrer vai so a origem: o YouTube recusa o embed sem ele (erro 153)
-    const IF = `<iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
-    cell.innerHTML = IF + IF + `<div class="bar"><b></b><span></span><em></em></div><div class="prog"></div>`;
-    const [f1, f2] = cell.querySelectorAll("iframe"), bar = cell.querySelector(".bar"), prog = cell.querySelector(".prog");
-    const carregar = (f, url) => { if (f.dataset.url !== url) { f.src = paraEmbed(url); f.dataset.url = url; } };
-    let i = -1, atual = f2;
-    const passo = () => {
-      i = (i + 1) % links.length;
-      const l = links[i], prox = atual === f1 ? f2 : f1, rodar = links.length > 1, saiu = atual;
-      carregar(prox, l.url);
-      prox.classList.add("on"); if (prox !== saiu) saiu.classList.remove("on"); atual = prox;
-      // o que saiu de cena e descarregado depois do fade: video escondido nao fica tocando nem gastando CPU
-      if (rodar && saiu !== prox) timers.push(setTimeout(() => { if (saiu !== atual) { saiu.src = "about:blank"; saiu.dataset.url = ""; } }, 700));
-      bar.querySelector("b").textContent = l.title || new URL(l.url).host;
-      bar.querySelector("span").textContent = l.url;
-      bar.querySelector("em").textContent = rodar ? `${i + 1}/${links.length} · ${mostrarTempo(l.duration)}` : "";
-      prog.style.transition = "none"; prog.style.width = "0";
-      if (!rodar) return;
-      requestAnimationFrame(() => requestAnimationFrame(() => { prog.style.transition = `width ${l.duration}s linear`; prog.style.width = "100%"; }));
-      timers.push(setTimeout(() => {  // pre-carrega o proximo no iframe escondido 4 s antes da troca
-        carregar(atual === f1 ? f2 : f1, links[(i + 1) % links.length].url);
-      }, Math.max(0, l.duration - 4) * 1000));
-      timers.push(setTimeout(passo, l.duration * 1000));
-    };
-    passo();
+    if (!links.length) { cell.innerHTML = `<div class="ph">${ICO.vazio}<span>Área sem conteúdo</span></div>`; return; }
+    areas.push(criarArea(cell, links));
   });
 }
+
+// Digitar dentro de uma area (login): com o foco dentro de um iframe, aquela area pausa a rotacao.
+// Ao clicar fora (o painel recebe o foco de volta) ou trocar para outra area, a rotacao segue. Checa a cada 0,5 s
+// porque ir de um iframe direto para outro nao gera evento nenhum na pagina do painel.
+setInterval(() => {
+  if (!areas.length) return;
+  const f = document.activeElement && document.activeElement.tagName === "IFRAME" ? document.activeElement : null;  // hasFocus() nao serve: e true com foco no iframe filho
+  areas.forEach(a => f && a.cell.contains(f) ? a.pausar() : a.retomar());
+}, 500);
+addEventListener("resize", () => document.querySelectorAll("#display .cell").forEach(enquadrar));  // "Tela da TV" acompanha a janela
 
 async function voltar() {
   if ($("#display").classList.contains("hidden")) return;
@@ -304,7 +595,7 @@ $("#b-back").onclick = voltar;
 const telaCheia = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => toast("Tela cheia bloqueada pelo navegador", "err"));
 $("#b-fs").onclick = telaCheia;
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) fechar(); else voltar(); }
+  if (e.key === "Escape") { if ([...document.querySelectorAll(".modal")].some(m => !m.classList.contains("hidden"))) fecharModais(); else voltar(); }
   if ((e.key === "f" || e.key === "F") && !$("#display").classList.contains("hidden")) telaCheia();
 });
 // barras e botoes so aparecem com o mouse em movimento (somem 2,5 s depois)
@@ -315,8 +606,9 @@ $("#fab").addEventListener("mouseenter", () => clearTimeout(parado));
 
 /* ---------- retomada: abre no ultimo estado salvo no servidor ---------- */
 (async () => {
-  try { const r = await fetch("api/config", {cache: "no-store"}); if (!r.ok) throw new Error("HTTP " + r.status); cfg = await r.json(); }
+  try { cfg = await api("api/config", {cache: "no-store"}); }
   catch (e) { toast("Não leu a configuração do servidor (" + e.message + "): usando uma vazia", "err"); }
+  cfg.tela = cfg.tela || padrao().tela;
   if (cfg.mode === "display" && temLinks(cfg)) telaExibicao(); else telaConfig();
 })();
 </script>

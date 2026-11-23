@@ -8,4 +8,6 @@ services:
       - "${PORTA:-8080}:3000"
     volumes:
       - ./data:/data          # config.json fica aqui (faca backup desta pasta)
-    mem_limit: 96m
+    environment:
+      - MAX_UPLOAD_MB=2048   # tamanho maximo de cada imagem/video enviado pela tela
+    mem_limit: 128m
