@@ -52,7 +52,7 @@ button{cursor:pointer;border:0;background:none}
 .num{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:13px;font-weight:700;background:#4f8cff22;color:var(--blue)}
 .area-h h3{font-size:15px;font-weight:650;margin-right:auto}.area-h small{color:var(--mut);font-size:12.5px}
 .links{padding:12px;display:flex;flex-direction:column;gap:10px}
-.link{display:grid;grid-template-columns:minmax(0,1fr) 92px auto;gap:8px;padding:10px;border-radius:var(--r2);background:var(--bg);border:1px solid var(--line);transition:border-color var(--t)}
+.link{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;gap:8px;padding:10px;border-radius:var(--r2);background:var(--bg);border:1px solid var(--line);transition:border-color var(--t)}
 .link:hover{border-color:var(--line2)}
 .link .url{grid-column:1/3}
 .f{display:flex;flex-direction:column;gap:4px}.f label{font-size:11.5px;color:var(--mut);font-weight:600;letter-spacing:.02em}
@@ -117,7 +117,7 @@ textarea:focus{outline:none;border-color:var(--blue)}
   <main class="wrap">
     <section class="sec"><h2>Layout da tela</h2><div class="layouts" id="layouts"></div></section>
     <section class="sec"><h2>Links de cada área</h2><div class="areas" id="areas"></div>
-      <p class="dica">Cada área troca sozinha de link no tempo definido. Sites que bloqueiam exibição em iframe (cabeçalho X-Frame-Options) aparecem em branco: libere o embed no próprio sistema.</p></section>
+      <p class="dica">Cada área troca sozinha de link no tempo definido em cada um (ex.: 30s, 5m, 1h ou 1:30). Links do YouTube (vídeo, shorts, playlist ou ao vivo) viram player automático, sem som e em loop. Sites que bloqueiam exibição em iframe (cabeçalho X-Frame-Options) aparecem em branco: libere o embed no próprio sistema.</p></section>
   </main>
 </section>
 
@@ -138,6 +138,7 @@ textarea:focus{outline:none;border-color:var(--blue)}
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
+<script src="util.js"></script>
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
@@ -186,7 +187,7 @@ function desenharAreas() {
     <div class="area-h"><span class="num">${a + 1}</span><h3>Área ${a + 1}</h3><small>${q.links.length} link${q.links.length === 1 ? "" : "s"}</small></div>
     <div class="links">${q.links.length ? q.links.map((l, i) => `<div class="link" data-a="${a}" data-i="${i}">
         <div class="f"><label>Nome (opcional)</label><input data-k="title" value="${esc(l.title)}" placeholder="Ex.: Zabbix"></div>
-        <div class="f"><label>Duração (s)</label><input data-k="duration" type="number" min="5" max="86400" value="${l.duration}"></div>
+        <div class="f"><label>Tempo na tela</label><input data-k="duration" value="${mostrarTempo(l.duration)}" placeholder="30s, 5m, 1:30" title="Aceita 30, 30s, 5m, 1h30m ou 1:30 (mínimo 5 s)"></div>
         <div class="acts"><button class="ico" data-op="up" title="Subir" ${i ? "" : "disabled"}>${ICO.up}</button>
           <button class="ico" data-op="down" title="Descer" ${i < q.links.length - 1 ? "" : "disabled"}>${ICO.down}</button>
           <button class="ico del" data-op="del" title="Remover">${ICO.del}</button></div>
@@ -202,8 +203,13 @@ $("#layouts").addEventListener("click", e => {
 $("#areas").addEventListener("input", e => {
   const inp = e.target, row = inp.closest(".link"); if (!row) return;
   const l = cfg.quadrants[row.dataset.a].links[row.dataset.i], k = inp.dataset.k;
-  l[k] = k === "duration" ? Math.max(5, Number(inp.value) || 15) : inp.value;
+  if (k === "duration") { const s = lerTempo(inp.value); inp.classList.toggle("bad", s == null || s < 5); if (s >= 5) l.duration = Math.min(86400, s); return; }
+  l[k] = inp.value;
   if (k === "url") inp.classList.toggle("bad", !!inp.value && !urlOk(inp.value.trim()));
+});
+$("#areas").addEventListener("focusout", e => {  // ao sair do campo, o tempo aparece no formato padrao (ex.: "90" -> "1m 30s")
+  const inp = e.target; if (inp.dataset.k !== "duration") return;
+  const row = inp.closest(".link"); inp.value = mostrarTempo(cfg.quadrants[row.dataset.a].links[row.dataset.i].duration); inp.classList.remove("bad");
 });
 $("#areas").addEventListener("click", e => {
   const add = e.target.closest("[data-add]");
@@ -258,24 +264,27 @@ function telaExibicao() {
     cell.className = "cell"; d.appendChild(cell);
     if (!links.length) { cell.innerHTML = `<div class="ph">${ICO.vazio}<span>Área sem links</span></div>`; return; }
     // dois iframes: o proximo carrega escondido e entra com fade, sem tela branca na troca
-    cell.innerHTML = `<iframe referrerpolicy="no-referrer"></iframe><iframe referrerpolicy="no-referrer"></iframe>
-      <div class="bar"><b></b><span></span><em></em></div><div class="prog"></div>`;
+    // allow: autoplay/tela cheia para players (YouTube). O referrer vai so a origem: o YouTube recusa o embed sem ele (erro 153)
+    const IF = `<iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    cell.innerHTML = IF + IF + `<div class="bar"><b></b><span></span><em></em></div><div class="prog"></div>`;
     const [f1, f2] = cell.querySelectorAll("iframe"), bar = cell.querySelector(".bar"), prog = cell.querySelector(".prog");
+    const carregar = (f, url) => { if (f.dataset.url !== url) { f.src = paraEmbed(url); f.dataset.url = url; } };
     let i = -1, atual = f2;
     const passo = () => {
       i = (i + 1) % links.length;
-      const l = links[i], prox = atual === f1 ? f2 : f1, rodar = links.length > 1;
-      if (prox.dataset.url !== l.url || !rodar) { prox.src = l.url; prox.dataset.url = l.url; }
-      prox.classList.add("on"); if (prox !== atual) atual.classList.remove("on"); atual = prox;
+      const l = links[i], prox = atual === f1 ? f2 : f1, rodar = links.length > 1, saiu = atual;
+      carregar(prox, l.url);
+      prox.classList.add("on"); if (prox !== saiu) saiu.classList.remove("on"); atual = prox;
+      // o que saiu de cena e descarregado depois do fade: video escondido nao fica tocando nem gastando CPU
+      if (rodar && saiu !== prox) timers.push(setTimeout(() => { if (saiu !== atual) { saiu.src = "about:blank"; saiu.dataset.url = ""; } }, 700));
       bar.querySelector("b").textContent = l.title || new URL(l.url).host;
       bar.querySelector("span").textContent = l.url;
-      bar.querySelector("em").textContent = rodar ? `${i + 1}/${links.length} · ${l.duration}s` : "";
+      bar.querySelector("em").textContent = rodar ? `${i + 1}/${links.length} · ${mostrarTempo(l.duration)}` : "";
       prog.style.transition = "none"; prog.style.width = "0";
       if (!rodar) return;
       requestAnimationFrame(() => requestAnimationFrame(() => { prog.style.transition = `width ${l.duration}s linear`; prog.style.width = "100%"; }));
       timers.push(setTimeout(() => {  // pre-carrega o proximo no iframe escondido 4 s antes da troca
-        const n = links[(i + 1) % links.length], escondido = atual === f1 ? f2 : f1;
-        if (escondido.dataset.url !== n.url) { escondido.src = n.url; escondido.dataset.url = n.url; }
+        carregar(atual === f1 ? f2 : f1, links[(i + 1) % links.length].url);
       }, Math.max(0, l.duration - 4) * 1000));
       timers.push(setTimeout(passo, l.duration * 1000));
     };

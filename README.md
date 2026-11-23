@@ -50,10 +50,26 @@ Se a pasta `data/` for criada com outro dono, o container (usuário `node`, uid 
 
 1. **Configuração:**
    - escolha o layout: 1 área, 2 lado a lado, 1 grande + 2 empilhadas, ou 2×2;
-   - em cada área, adicione links com nome (opcional), URL e duração (mínimo 5 s), e reordene com ↑ ↓;
+   - em cada área, adicione links com nome (opcional), URL e tempo na tela (mínimo 5 s; aceita `30s`, `5m`, `1h30m` ou `1:30`), e reordene com ↑ ↓;
    - **Salvar** grava no servidor;
    - **Iniciar exibição** grava e abre o modo kiosk.
 2. **Exibição:** mova o mouse para ver, em cada área, o nome, a URL e o progresso até a troca, além dos botões de tela cheia (tecla **F**) e de configuração (tecla **Esc**). Com o mouse parado, tudo some e o cursor também.
+
+## YouTube
+
+O link pode ser colado como aparece no navegador. O painel converte sozinho para o player de embed, porque a página `watch` do YouTube bloqueia iframe.
+
+| Link colado | Vira |
+|---|---|
+| `youtube.com/watch?v=ID`, `youtu.be/ID`, `/shorts/ID`, `/live/ID` | vídeo em loop |
+| `youtube.com/playlist?list=PL…` ou `watch?v=ID&list=PL…` | playlist |
+| `youtube.com/channel/UC…/live` | a transmissão ao vivo do canal |
+| `&t=90s` | começa no segundo 90 |
+
+- **Sem som:** o vídeo toca automático e mudo, porque os navegadores bloqueiam autoplay com som. Numa TV dedicada, rode o Chrome com `--autoplay-policy=no-user-gesture-required` para liberar o som; depois é só ajustar no player.
+- **Mix e Rádio (`list=RD…`):** o embed não aceita essas listas. O painel toca só o vídeo, em loop.
+- **"Este vídeo não está disponível":** o dono do canal desativou a reprodução fora do YouTube, o que é comum em clipes de gravadora. Não tem como contornar; use outro vídeo.
+- **Tempo:** coloque no campo **Tempo na tela** a duração do vídeo (ex.: `3:45`) para trocar no fim, ou um tempo menor para mostrar só um trecho.
 
 ## API
 
