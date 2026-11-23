@@ -11,20 +11,21 @@ Tela de NOC para TVs e monitores. A tela é dividida em até 4 áreas, e cada á
 Precisa só de Docker com o plugin `compose`.
 
 ```sh
-git clone https://github.com/sidneycavalcanti/painel-rotativo.git
-cd painel-rotativo
+git clone https://github.com/sidneycavalcanti/rotativo-move.git
+cd rotativo-move
 cp .env.example .env        # opcional: troque PORTA se a 8080 estiver ocupada
 docker compose up -d --build
 ```
 
 Abra `http://IP_DO_SERVIDOR:8080`, ou a porta definida no `.env`.
 
-**Usando a imagem pronta do GitHub (sem compilar):** a cada push na `main`, o GitHub Actions publica `ghcr.io/sidneycavalcanti/painel-rotativo` para amd64 e arm64, o que inclui o Raspberry Pi. O repositório é privado, então o servidor precisa fazer login uma vez com um token que tenha `read:packages`:
+**Usando a imagem pronta (sem compilar no servidor):** a cada push na `main`, o GitHub Actions roda o teste e publica `ghcr.io/sidneycavalcanti/rotativo-move:latest` para amd64 e arm64, o que inclui o Raspberry Pi.
 
 ```sh
-echo "$TOKEN" | docker login ghcr.io -u sidneycavalcanti --password-stdin
 docker compose pull && docker compose up -d
 ```
+
+Se o `pull` pedir login (`unauthorized`), o pacote ainda está privado. Para torná-lo público, vá em GitHub → seu perfil → Packages → `rotativo-move` → Package settings → Change visibility → Public. Outra opção é fazer `docker login ghcr.io` com um token que tenha `read:packages`.
 
 **Sem docker compose:**
 

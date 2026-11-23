@@ -1,6 +1,6 @@
 services:
   painel-rotativo:
-    image: ghcr.io/sidneycavalcanti/painel-rotativo:latest   # publicada pelo GitHub Actions a cada push na main
+    image: ghcr.io/sidneycavalcanti/rotativo-move:latest   # publicada pelo GitHub Actions a cada push na main
     build: .                                                # sem acesso ao registry: "docker compose up -d --build" constroi aqui
     container_name: painel-rotativo
     restart: unless-stopped
