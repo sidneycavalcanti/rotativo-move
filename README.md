@@ -45,7 +45,21 @@ docker run -d --name painel-rotativo --restart unless-stopped -p 8080:3000 -v "$
 | Restaurar | cole o JSON em **Importar / Exportar** → Aplicar, ou coloque o arquivo em `data/` |
 | Testar o servidor | `node test.js` (Node 18 ou mais) |
 
-Se a pasta `data/` for criada com outro dono, o container (usuário `node`, uid 1000) precisa conseguir gravar nela: `sudo chown 1000:1000 data`.
+**Permissão da pasta `data/`:** o container entra como root, passa a pasta `/data` para o usuário `node` e só então sobe o servidor. Por isso um `data/` com dono root, que é o caso do `git clone` feito como root, funciona sem ajuste.
+
+Com imagens anteriores a esse ajuste, salvar dava `EACCES: permission denied ... config.json.tmp`. Para resolver, atualize, ou rode na pasta do projeto `sudo chown -R 1000:1000 data && docker compose restart`.
+
+**Atrás de proxy (nginx, Traefik, NPM):** funciona também num subcaminho, como `location /painel/ { proxy_pass http://painel:3000/; }`, porque a página usa caminhos relativos.
+
+**udocker / podman rootless:** sem root de verdade, o container roda com o usuário atual e não troca de dono. A pasta montada precisa permitir gravação para esse usuário. Exemplo com udocker:
+
+```sh
+udocker pull ghcr.io/sidneycavalcanti/rotativo-move:latest
+udocker create --name=rotativo ghcr.io/sidneycavalcanti/rotativo-move:latest
+mkdir -p data && nohup udocker run -v "$PWD/data:/data" -e PORT=8080 rotativo > rotativo.log 2>&1 &
+```
+
+O udocker não mapeia portas: o servidor escuta direto na porta do `PORT`.
 
 ## Uso
 
@@ -71,6 +85,18 @@ O link pode ser colado como aparece no navegador. O painel converte sozinho para
 - **Mix e Rádio (`list=RD…`):** o embed não aceita essas listas. O painel toca só o vídeo, em loop.
 - **"Este vídeo não está disponível":** o dono do canal desativou a reprodução fora do YouTube, o que é comum em clipes de gravadora. Não tem como contornar; use outro vídeo.
 - **Tempo:** coloque no campo **Tempo na tela** a duração do vídeo (ex.: `3:45`) para trocar no fim, ou um tempo menor para mostrar só um trecho.
+
+## Sites com login
+
+O painel não guarda senhas. O navegador também não deixa uma página preencher o login de outro site dentro de um iframe, por segurança. O caminho é dar à TV um acesso próprio, só de leitura, em cada sistema:
+
+| Sistema | Como fazer a TV entrar sozinha |
+|---|---|
+| Grafana | **Acesso anônimo** só leitura (`GF_AUTH_ANONYMOUS_ENABLED=true`, `GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer`) + `GF_SECURITY_ALLOW_EMBEDDING=true`, ou **dashboard público** (Share → Public dashboard), que já gera um link sem login. Use `?kiosk` no fim do link |
+| Zabbix | Usuário **guest** habilitado num grupo só leitura (Usuários → Grupos → "Guests": ativar, dar permissão de leitura aos hosts). Depois libere o iframe (Administração → Geral → Outros → X-Frame-Options) |
+| GLPI e outros | Faça login **uma vez** na própria TV, dentro do painel. O cookie fica salvo naquele navegador. Se o site está em outro domínio, o Chrome pode bloquear o cookie no iframe: libere "cookies de terceiros" para esse site nas configurações da TV |
+
+Sistemas na mesma rede e com HTTPS próprio costumam manter o login feito uma vez na TV. Sistemas com cookie `SameSite=Lax`, como o padrão do Grafana, não mantêm login dentro de iframe; para eles use o acesso anônimo ou o link público.
 
 ## API
 

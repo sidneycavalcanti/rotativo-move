@@ -164,8 +164,10 @@ function toast(msg, tipo = "ok") {
 
 async function salvar(mode) {
   cfg.mode = mode;
-  const r = await fetch("/api/config", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(cfg)});
-  const d = await r.json();
+  const r = await fetch("api/config", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(cfg)});
+  const txt = await r.text();
+  let d; try { d = JSON.parse(txt); }
+  catch { throw new Error(`o servidor respondeu HTTP ${r.status} sem JSON (proxy ou endereço errado?): ${txt.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 90)}`); }
   if (!r.ok) throw new Error(d.erro || "HTTP " + r.status);
   cfg = d;
 }
@@ -313,8 +315,8 @@ $("#fab").addEventListener("mouseenter", () => clearTimeout(parado));
 
 /* ---------- retomada: abre no ultimo estado salvo no servidor ---------- */
 (async () => {
-  try { const r = await fetch("/api/config", {cache: "no-store"}); if (r.ok) cfg = await r.json(); }
-  catch { toast("Servidor indisponível: usando configuração vazia", "err"); }
+  try { const r = await fetch("api/config", {cache: "no-store"}); if (!r.ok) throw new Error("HTTP " + r.status); cfg = await r.json(); }
+  catch (e) { toast("Não leu a configuração do servidor (" + e.message + "): usando uma vazia", "err"); }
   if (cfg.mode === "display" && temLinks(cfg)) telaExibicao(); else telaConfig();
 })();
 </script>

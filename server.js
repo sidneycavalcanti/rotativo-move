@@ -66,12 +66,22 @@ http.createServer((req, res) => {
     req.on("data", p => { corpo += p; if (corpo.length > MAX_BODY) { grande = true; req.destroy(); } });
     req.on("end", () => {
       if (grande) return;
-      try { const c = normalizar(JSON.parse(corpo)); gravarConfig(c); json(res, 200, c); }
-      catch (e) { json(res, 400, {erro: e.message}); }
+      let c;
+      try { c = normalizar(JSON.parse(corpo)); }
+      catch (e) { return json(res, 400, {erro: "JSON invalido: " + e.message}); }
+      try { gravarConfig(c); json(res, 200, c); }
+      catch (e) {  // quase sempre: volume ./data com dono root e o servidor rodando como outro usuario
+        console.error("falha ao gravar", CONFIG, e.message);
+        json(res, 500, {erro: `o servidor nao conseguiu gravar ${CONFIG} (${e.code || e.message}). No host, na pasta do projeto: sudo chown -R 1000:1000 data`});
+      }
     });
     return;
   }
   if (rota === "/health") return json(res, 200, {ok: true});
   if (req.method === "GET" || req.method === "HEAD") return estatico(req, res);
   json(res, 405, {erro: "metodo nao permitido"});
-}).listen(PORT, () => console.log(`painel-rotativo na porta ${PORT}, config em ${CONFIG}`));
+}).listen(PORT, () => {
+  console.log(`painel-rotativo na porta ${PORT}, config em ${CONFIG}`);
+  try { fs.mkdirSync(DATA, {recursive: true}); fs.accessSync(DATA, fs.constants.W_OK); }
+  catch (e) { console.error(`ATENCAO: sem permissao de gravar em ${DATA} (${e.code}); o Salvar vai falhar. No host: sudo chown -R 1000:1000 data`); }
+});
