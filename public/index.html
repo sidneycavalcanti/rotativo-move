@@ -130,7 +130,7 @@ textarea:focus{outline:none;border-color:var(--blue)}
 .slot img,.slot video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
 #display.esticar .slot img,#display.esticar .slot video{object-fit:fill}
 .ph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;color:var(--mut2);font-size:14px;background:repeating-linear-gradient(135deg,#0b0f16 0 14px,#0d121a 14px 28px)}
-.ph svg{width:34px;height:34px;opacity:.6}
+.ph svg{width:34px;height:34px;opacity:.6}.ph small{max-width:46ch;text-align:center;font-size:12.5px;padding:0 16px}
 .bar{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:10px 14px 12px;background:linear-gradient(transparent,rgba(3,5,9,.92) 45%);display:flex;align-items:center;gap:10px;font-size:13px;opacity:0;transition:opacity .25s ease;pointer-events:none}
 .bar b{font-weight:650;white-space:nowrap}.bar span{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
 .bar em{font-style:normal;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -307,7 +307,7 @@ async function salvar(mode) {
 const banco = new Promise((ok, erro) => {
   const r = indexedDB.open("rotativo", 1);
   r.onupgradeneeded = () => r.result.createObjectStore("midia", {keyPath: "nome"});
-  r.onsuccess = () => ok(r.result); r.onerror = () => erro(r.error);
+  r.onsuccess = () => ok(r.result); r.onerror = () => erro(r.error); r.onblocked = () => erro(new Error("banco de mídia em uso por outra aba"));
 });
 async function loja(modo, f) {
   const t = (await banco).transaction("midia", modo), r = f(t.objectStore("midia"));
@@ -407,6 +407,8 @@ $("#b-save").onclick = async () => {
 $("#b-start").onclick = async () => {
   limpar();
   if (!temLinks(cfg)) return toast("Cadastre ao menos um link http(s) ou uma mídia", "err");
+  const http = location.protocol === "https:" && cfg.quadrants.slice(0, cfg.layout).flatMap(q => q.links).filter(l => /^http:/i.test(l.url)).length;
+  if (http) toast(`${http} link(s) http não abrem nesta página https: use o painel pelo endereço http da rede`, "err");
   try { await salvar("display"); telaExibicao(); } catch (e) { toast("Não salvou: " + e.message, "err"); }
 };
 
@@ -557,6 +559,10 @@ function preencher(slot, l) {
   else if (tipo === "video") {
     slot.innerHTML = `<video src="${esc(endereco(l.url))}" autoplay muted loop playsinline preload="auto"></video>`;
     slot.querySelector("video").play().catch(() => {});
+  } else if (location.protocol === "https:" && /^http:/i.test(l.url)) {
+    // pagina https nao pode mostrar link http dentro dela (o navegador bloqueia e a area ficaria branca)
+    slot.innerHTML = `<div class="ph">${ICO.vazio}<span>Link http bloqueado numa página https</span>
+      <small>Abra o painel pelo endereço http da rede (ex.: http://IP:porta) ou use um link https. ↗ abre o link numa aba.</small></div>`;
   } else {
     // allow: autoplay/tela cheia para players (YouTube). O referrer vai so a origem: o YouTube recusa o embed sem ele (erro 153)
     const f = document.createElement("iframe");
@@ -761,7 +767,7 @@ $("#cf-x").onclick = fecharModais;
 (async () => {
   try { const g = localStorage.getItem(CHAVE); if (g) cfg = normalizar(JSON.parse(g)); }
   catch (e) { toast("Não leu a configuração guardada (" + e.message + "): usando uma vazia", "err"); }
-  try { await lerBiblioteca(); } catch {}  // sem IndexedDB (janela anonima de alguns navegadores): so os links funcionam
+  try { await Promise.race([lerBiblioteca(), new Promise(ok => setTimeout(ok, 3000))]); } catch {}  // nunca deixa a tela em branco esperando  // sem IndexedDB (janela anonima de alguns navegadores): so os links funcionam
   if (cfg.mode === "display" && temLinks(cfg)) telaExibicao(); else telaConfig();
 })();
 </script>

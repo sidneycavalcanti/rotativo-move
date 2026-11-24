@@ -55,6 +55,9 @@ var EN = {
   "🔒 Tudo o que você cadastra aqui (links, imagens e vídeos) fica guardado só neste navegador. Outra pessoa, ou outro navegador, abre o painel vazio. Para levar para a TV, use Importar / Exportar.":
     "🔒 Everything you add here (links, images and videos) is stored only in this browser. Anyone else, or another browser, opens an empty panel. To take it to the TV, use Import / Export.",
   "{}: tipo não aceito": "{}: file type not accepted", "Não guardou {}: {}": "Could not store {}: {}",
+  "Link http bloqueado numa página https": "http link blocked on an https page",
+  "Abra o painel pelo endereço http da rede (ex.: http://IP:porta) ou use um link https. ↗ abre o link numa aba.": "Open the panel from its http address on your network (e.g. http://IP:port) or use an https link. ↗ opens the link in a tab.",
+  "{} link(s) http não abrem nesta página https: use o painel pelo endereço http da rede": "{} http link(s) can't open on this https page: use the panel from its http address on your network",
   "o navegador não deixou guardar ({})": "the browser did not allow saving ({})",
   "Na exibição, arraste as divisórias entre as áreas para aumentar ou diminuir cada uma (duplo clique volta ao padrão).":
     "On display, drag the dividers between areas to make each one bigger or smaller (double-click restores the default).",
