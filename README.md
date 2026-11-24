@@ -196,3 +196,15 @@ Para conferir um site: `curl -sI http://site | grep -i -E "x-frame|frame-ancesto
 ## Segurança
 
 O painel não tem login, então qualquer pessoa da rede pode mudar os links. Use-o só em rede interna e não o exponha na internet sem um proxy com autenticação na frente.
+
+## Exibição: tamanho das áreas, login e atualizar
+
+- **Tamanho das áreas:** com o mouse em movimento aparecem as divisórias entre as áreas; arraste para aumentar ou diminuir (fica salvo). Duplo clique volta ao padrão.
+- **Barra e progresso:** só aparecem com o mouse em movimento; a troca acontece sozinha no tempo definido, sem aviso na tela.
+- **Navegar / fazer login num painel:** clique dentro da área e use normalmente; a rotação daquela área pausa enquanto você usa (volta ao clicar fora ou após 5 min).
+- **Botões de cada área** (na barra de baixo): ↻ atualiza a área; ↗ abre o link numa aba nova. Use a aba nova para fazer login quando o sistema não deixa entrar dentro do iframe; depois de logado, atualize a área.
+- Login dentro do iframe depende do sistema: Grafana precisa de `allow_embedding = true` (e `cookie_samesite = none` + HTTPS se o painel estiver em outro domínio); Zabbix precisa liberar o X-Frame-Options em *Administração → Geral → Outros*.
+
+## Me pague um café
+
+`CAFE_URL` (Buy Me a Coffee, Ko-fi...) e `PIX_CHAVE` no `.env`. Com Pix, o botão abre uma janela com as duas formas e o botão de copiar a chave.

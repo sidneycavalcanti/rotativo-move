@@ -27,6 +27,7 @@ const post = body => fetch(url("/api/config"), {method: "POST", headers: {"Conte
   assert.strictEqual(salvo.extra, undefined);                    // campo desconhecido descartado
   assert.deepStrictEqual(salvo.tela, {resolucao: "3840x2160", ajuste: "esticar"});
   assert.strictEqual((await (await post(JSON.stringify({tela: {resolucao: "999x1", ajuste: "x"}}))).json()).tela.resolucao, "auto");
+  assert.deepStrictEqual((await (await post(JSON.stringify({tela: {divX: 0.3333, divY: 2}}))).json()).tela, {resolucao: "auto", ajuste: "conter", divX: 0.333});  // divisoria arrastada; fora de 0,1-0,9 cai
   assert.strictEqual(salvo.quadrants.length, 4);                 // sempre 4 areas
   assert.deepStrictEqual(salvo.quadrants[0].links[0], {title: "Zabbix", url: "http://10.0.0.1/", duration: 5, zoom: 100});  // minimo 5 s, zoom padrao
   assert.strictEqual(salvo.quadrants[0].links[1].duration, 30);
@@ -124,6 +125,17 @@ quadrants:
     {links: [{title: "Grafana NOC", url: "http://grafana.local:3000/d/abc?kiosk", duration: 60}, {url: "https://x.com/a#b", duration: 5}]}, {links: []}]});
   assert.deepStrictEqual(U.lerConfigTexto('{"layout": 1}'), {layout: 1});      // JSON tambem entra
   assert.throws(() => U.lerYaml(["layout: 2", "  solto: 1"].join("\n")));  // indentacao sem dono = erro claro
+
+  // traducao: exata, com trecho variavel e sem entrada (fica em portugues)
+  const {traduzir} = U, D = {"Salvar": "Save", "Área {}": "Area {}", "Não salvou: {}": "Not saved: {}", "{} itens": "{} items"};
+  assert.strictEqual(traduzir("  Salvar ", D), "  Save ");
+  assert.strictEqual(traduzir("Área 3", D), "Area 3");
+  assert.strictEqual(traduzir("Não salvou: disco (cheio)", D), "Not saved: disco (cheio)");
+  assert.strictEqual(traduzir("12 itens", D), "12 items");
+  assert.strictEqual(traduzir("Outra coisa", D), "Outra coisa");
+  const EN = require("vm").runInNewContext(fs.readFileSync(path.join(__dirname, "public/en.js"), "utf8") + ";EN");
+  assert.strictEqual(traduzir("Vídeo · 12 MB", EN), "Video · 12 MB");
+  assert.deepStrictEqual(await (await fetch(url("/api/info"))).json(), {cafe: "", pix: ""});  // sem CAFE_URL/PIX_CHAVE: sem botao
 
   console.log("test ok");
 })().catch(e => { console.error(e); process.exitCode = 1; }).finally(() => { srv.kill(); fs.rmSync(DATA, {recursive: true, force: true}); });

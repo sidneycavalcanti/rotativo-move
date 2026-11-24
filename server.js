@@ -18,6 +18,9 @@ const TIPOS = {".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
                ".svg": "image/svg+xml", ".avif": "image/avif", ".bmp": "image/bmp",
                ".mp4": "video/mp4", ".m4v": "video/mp4", ".webm": "video/webm", ".ogv": "video/ogg", ".mov": "video/quicktime"};
 const EXT_MIDIA = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".avif", ".bmp", ".mp4", ".m4v", ".webm", ".ogv", ".mov"];
+// "Me pague um cafe": link da pagina de pagamento (Buy Me a Coffee, Ko-fi, LivePix...). So http(s); vazio = sem botao
+const CAFE = /^https?:\/\/\S+$/i.test(process.env.CAFE_URL || "") ? process.env.CAFE_URL : "";
+const PIX = String(process.env.PIX_CHAVE || "").replace(/[^\w@.+-]/g, "").slice(0, 77);  // chave Pix (telefone, e-mail, CPF ou aleatoria)
 const RESOLUCOES = ["auto", "1280x720", "1920x1080", "2560x1440", "3840x2160"];
 
 const padrao = () => ({layout: 4, mode: "settings", tela: {resolucao: "auto", ajuste: "conter"},
@@ -31,6 +34,8 @@ function normalizar(c) {
   const t = c.tela && typeof c.tela === "object" ? c.tela : {};
   const tela = {resolucao: RESOLUCOES.includes(String(t.resolucao)) ? String(t.resolucao) : "auto",
                 ajuste: t.ajuste === "esticar" ? "esticar" : "conter"};
+  // divisorias arrastadas na exibicao: fracao da largura (divX) e da altura (divY); sem valor = padrao do layout
+  for (const k of ["divX", "divY"]) { const v = Number(t[k]); if (v >= 0.1 && v <= 0.9) tela[k] = Math.round(v * 1000) / 1000; }
   const qs = Array.isArray(c.quadrants) ? c.quadrants : [];
   const quadrants = [0, 1, 2, 3].map(i => ({
     links: (Array.isArray(qs[i] && qs[i].links) ? qs[i].links : []).slice(0, 100).map(l => ({
@@ -133,6 +138,7 @@ http.createServer((req, res) => {
   let rota;
   try { rota = decodeURIComponent(u.pathname); } catch { return json(res, 400, {erro: "url invalida"}); }
 
+  if (rota === "/api/info" && req.method === "GET") return json(res, 200, {cafe: CAFE, pix: PIX});
   if (rota === "/api/config" && req.method === "GET") return json(res, 200, lerConfig());
   if (rota === "/api/config" && req.method === "POST") {
     let corpo = "", grande = false;

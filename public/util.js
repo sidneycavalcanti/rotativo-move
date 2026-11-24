@@ -190,7 +190,27 @@
     return dir > 0 ? ZOOMS.find(x => x > z) ?? 400 : [...ZOOMS].reverse().find(x => x < z) ?? 25;
   }
 
-  const api = {proximoZoom, paraEmbed, lerTempo, mostrarTempo, urlOk, tipoMidia, encaixe, paraYaml, lerYaml, lerConfigTexto};
+  // Traducao: o texto em portugues e a chave. "{}" no dicionario casa qualquer trecho (numeros, nomes) e e
+  // repassado na mesma ordem para a traducao. Sem traducao, devolve o original.
+  const padroes = new WeakMap();
+  function traduzir(texto, dic) {
+    const s = String(texto), t = s.trim();
+    if (!t) return s;
+    if (Object.hasOwn(dic, t)) return s.replace(t, dic[t]);
+    let lista = padroes.get(dic);
+    if (!lista) {
+      lista = Object.keys(dic).filter(k => k.includes("{}")).map(k =>
+        [new RegExp("^" + k.split("{}").map(p => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("(.+?)") + "$", "s"), dic[k]]);
+      padroes.set(dic, lista);
+    }
+    for (const [re, en] of lista) {
+      const m = t.match(re);
+      if (m) { let i = 1; return s.replace(t, en.replace(/\{\}/g, () => m[i++])); }
+    }
+    return s;
+  }
+
+  const api = {traduzir, proximoZoom, paraEmbed, lerTempo, mostrarTempo, urlOk, tipoMidia, encaixe, paraYaml, lerYaml, lerConfigTexto};
   if (typeof module !== "undefined") module.exports = api;
   else Object.assign(raiz, api);
 })(this);

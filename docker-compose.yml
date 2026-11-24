@@ -10,4 +10,6 @@ services:
       - ./data:/data          # config.json fica aqui (faca backup desta pasta)
     environment:
       - MAX_UPLOAD_MB=2048   # tamanho maximo de cada imagem/video enviado pela tela
+      - CAFE_URL=${CAFE_URL:-}  # link do botao "Me pague um cafe" (vazio = sem botao)
+      - PIX_CHAVE=${PIX_CHAVE:-}  # chave Pix mostrada na janela do cafe (vazio = sem Pix)
     mem_limit: 128m
