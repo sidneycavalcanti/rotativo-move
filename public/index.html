@@ -128,7 +128,9 @@ textarea:focus{outline:none;border-color:var(--blue)}
 .slot{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity .5s ease}
 .slot.on{opacity:1}
 /* pagina: desenhada numa tela virtual (ex.: 1920x1080) e reduzida por transform, como se a area fosse uma TV inteira */
-.slot iframe{position:absolute;left:0;top:0;border:0;background:#fff;transform-origin:0 0}
+/* a moldura tem o tamanho da tela virtual e corta a sobra do iframe: a barra de rolagem da pagina fica de fora (a roda do mouse continua rolando) */
+.slot .moldura{position:absolute;left:0;top:0;overflow:hidden;background:#fff;transform-origin:0 0}
+.slot iframe{display:block;border:0;background:#fff}
 .slot img,.slot video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
 #display.esticar .slot img,#display.esticar .slot video{object-fit:fill}
 .ph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;color:var(--mut2);font-size:14px;background:repeating-linear-gradient(135deg,#0b0f16 0 14px,#0d121a 14px 28px)}
@@ -524,15 +526,17 @@ function enquadrar(cell) {
   const w = cell.clientWidth, h = cell.clientHeight; if (!w || !h) return;
   const [bw, bh] = telaVirtual();
   cell.querySelectorAll(".slot").forEach(slot => {
-    const z = (Number(slot.dataset.zoom) || 100) / 100, f = slot.querySelector("iframe"), m = slot.querySelector("img, video");
+    const z = (Number(slot.dataset.zoom) || 100) / 100, f = slot.querySelector(".moldura"), m = slot.querySelector("img, video");
     if (f) {
       const vw = Math.round(bw / z), vh = Math.round(bh / z), e = encaixe(w, h, vw, vh, cfg.tela.ajuste);
       f.style.width = vw + "px"; f.style.height = vh + "px";
+      f.firstChild.style.width = vw + SOBRA + "px"; f.firstChild.style.height = vh + SOBRA + "px";
       f.style.transform = `translate(${e.ox}px, ${e.oy}px) scale(${e.sx}, ${e.sy})`;
     }
     if (m) m.style.transform = z === 1 ? "" : `scale(${z})`;
   });
 }
+const SOBRA = 24;  // px a mais no iframe, cortados pela moldura: cabe a barra de rolagem (15-17 px) de baixo e da direita
 const observador = new ResizeObserver(ents => ents.forEach(en => enquadrar(en.target)));
 
 // conteudo de um slot conforme o tipo: pagina (iframe na tela virtual), imagem ou video
@@ -550,7 +554,8 @@ function preencher(slot, l) {
     const f = document.createElement("iframe");
     f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"; f.allowFullscreen = true;
     f.referrerPolicy = "strict-origin-when-cross-origin"; f.src = paraEmbed(l.url);
-    slot.replaceChildren(f);
+    const mold = document.createElement("div"); mold.className = "moldura"; mold.appendChild(f);
+    slot.replaceChildren(mold);
   }
   enquadrar(slot.parentElement);
 }
