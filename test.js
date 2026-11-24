@@ -37,6 +37,7 @@ const U = require("./public/util.js");
   for (const p of ["/../server.js", "/%2e%2e/server.js", "/..%2fserver.js"])  // nada fora de /public
     assert.notStrictEqual((await fetch(url(p))).status, 200, p);
   assert.match(await (await fetch(url("/"))).text(), /Painel Rotativo/);
+  assert.match(await (await fetch(url("/"))).text(), /<script src="util\.js\?v=\w+"><\/script>/);  // sem cache velho de CDN
 
   // YouTube: links comuns viram embed (o "watch" bloqueia iframe)
   const {paraEmbed} = require("./public/util.js");
