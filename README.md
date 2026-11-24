@@ -61,6 +61,8 @@ O udocker não mapeia portas: o servidor escuta direto na porta do `PORT`.
 
 ## Uso
 
+Manual para quem usa (passo a passo, login nos dashboards, problemas comuns): `/manual.html`, também no botão **Manual** do topo.
+
 1. **Configuração:**
    - escolha o layout: 1 área, 2 lado a lado, 1 grande + 2 empilhadas, ou 2×2;
    - em cada área, adicione links com nome (opcional), URL e tempo na tela (mínimo 5 s; aceita `30s`, `5m`, `1h30m` ou `1:30`), e reordene com ↑ ↓;

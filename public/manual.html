@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual · Painel Rotativo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f17'/%3E%3Crect x='6' y='6' width='9' height='20' rx='2' fill='%234f8cff'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%232fbf71'/%3E%3Crect x='17' y='17' width='9' height='9' rx='2' fill='%234f8cff' opacity='.6'/%3E%3C/svg%3E">
+<script>/* mesmo tema e idioma escolhidos no painel (preferencia deste navegador) */
+try {
+  document.documentElement.dataset.tema = localStorage.getItem("tema") || (matchMedia("(prefers-color-scheme: light)").matches ? "claro" : "escuro");
+  document.documentElement.dataset.idioma = localStorage.getItem("idioma") || (/^pt/i.test(navigator.language) ? "pt" : "en");
+} catch { document.documentElement.dataset.tema = "escuro"; document.documentElement.dataset.idioma = "pt"; }</script>
+<style>
+:root{--bg:#07090e;--panel:#111722;--panel2:#18202e;--line:#263247;--txt:#e7ecf5;--mut:#8b97ab;--blue:#4f8cff;--green:#2fbf71;--amber:#f5b84a;--red:#f0566a;color-scheme:dark}
+:root[data-tema=claro]{--bg:#f4f6fa;--panel:#fff;--panel2:#eef2f7;--line:#dde3ec;--txt:#151b26;--mut:#556174;color-scheme:light}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--txt);font:16px/1.65 "Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+:root[data-idioma=en] [lang=pt],:root:not([data-idioma=en]) [lang=en]{display:none}
+.top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 24px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top b{margin-right:auto;font-size:17px}
+.top a,.top button{font:600 14px inherit;color:var(--txt);text-decoration:none;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer}
+.top a.go{background:var(--green);border-color:var(--green);color:#03140b}
+.wrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;max-width:1100px;margin:0 auto;padding:32px 24px 80px}
+nav{position:sticky;top:80px;align-self:start;display:flex;flex-direction:column;gap:2px;font-size:14px}
+nav a{color:var(--mut);text-decoration:none;padding:5px 10px;border-radius:8px}nav a:hover{color:var(--txt);background:var(--panel2)}
+main{min-width:0}
+h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;margin-bottom:8px}
+.lead{color:var(--mut);font-size:17px;margin-bottom:28px}
+h2{font-size:21px;margin:44px 0 12px;padding-top:8px;scroll-margin-top:80px}
+h3{font-size:16px;margin:22px 0 6px}
+p,ul,ol{margin-bottom:12px}ul,ol{padding-left:22px}li{margin-bottom:6px}
+code,kbd{font:14px ui-monospace,"Cascadia Code",Consolas,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+kbd{border-bottom-width:2px}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow:auto;margin-bottom:12px}pre code{background:none;border:0;padding:0}
+.passos{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;counter-reset:p}
+.passos li{counter-increment:p;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0}
+.passos li::before{content:counter(p);display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#4f8cff22;color:var(--blue);font-weight:700;margin-bottom:8px}
+.box{border-radius:12px;padding:12px 16px;margin:14px 0;border:1px solid;font-size:15px}
+.box.dica{border-color:#4f8cff55;background:#4f8cff10}.box.ok{border-color:#2fbf7155;background:#2fbf710f}.box.aviso{border-color:#f5b84a66;background:#f5b84a12}
+table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.selo{display:inline-block;padding:1px 10px;border-radius:99px;background:#f5b84a;color:#1d1403;font-weight:700;font-size:13px}
+@media (max-width:820px){.wrap{grid-template-columns:1fr;gap:0;padding:20px 16px 60px}nav{display:none}.top{padding:12px 16px}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <b><span lang="pt">Manual do Painel Rotativo</span><span lang="en">Rotating Panel manual</span></b>
+  <button id="b-idioma"><span lang="pt">EN</span><span lang="en">PT</span></button>
+  <a class="go" href="./"><span lang="pt">Abrir o painel</span><span lang="en">Open the panel</span></a>
+</header>
+
+<!-- ======================= PORTUGUES ======================= -->
+<div class="wrap" lang="pt">
+<nav>
+  <a href="#comecar">Comece em 4 passos</a><a href="#layout">Layout e divisórias</a><a href="#enquadrar">Enquadramento</a>
+  <a href="#conteudo">Links, tempo e zoom</a><a href="#midia">Imagens e vídeos</a><a href="#exibir">Modo exibição</a>
+  <a href="#login">Login nos dashboards</a><a href="#tv">Levar para a TV</a><a href="#privacidade">Privacidade</a>
+  <a href="#rede">Dashboards da rede local</a><a href="#problemas">Problemas comuns</a>
+</nav>
+<main>
+  <h1>Como usar o Painel Rotativo</h1>
+  <p class="lead">Mostre vários dashboards (Grafana, Zabbix, Home Assistant…), páginas, vídeos do YouTube, imagens e vídeos numa TV. A tela pode ter até 4 áreas, e cada uma alterna sozinha entre os itens que você cadastrou.</p>
+
+  <h2 id="comecar">Comece em 4 passos</h2>
+  <ol class="passos">
+    <li><b>Escolha o layout.</b><br>Tela inteira, lado a lado, 1 grande + 2 ou grade 2 × 2.</li>
+    <li><b>Cadastre o conteúdo.</b><br>Em cada área, clique em <i>Adicionar item</i> e cole um link ou escolha uma mídia.</li>
+    <li><b>Defina o tempo.</b><br>Quanto cada item fica na tela antes de passar para o próximo.</li>
+    <li><b>Salve e exiba.</b><br>Clique em <i>Salvar</i>, depois em <i>Iniciar exibição</i>, e aperte <kbd>F</kbd> para tela cheia.</li>
+  </ol>
+  <div class="box dica">💡 Exemplo: uma TV de NOC com o Grafana na área 1, o Zabbix na área 2 e, na área 3, um vídeo institucional alternando com um dashboard de chamados a cada 2 minutos.</div>
+
+  <h2 id="layout">Layout e divisórias</h2>
+  <p>Em <b>Layout da tela</b>, escolha quantas áreas a TV mostra. Só as áreas do layout escolhido aparecem na exibição. O que estiver cadastrado nas outras fica guardado para quando você voltar a usá-las.</p>
+  <p>Na exibição, mexa o mouse para aparecerem as <b>divisórias azuis</b> entre as áreas. <b>Arraste</b> uma divisória para aumentar uma área e diminuir a vizinha. Um <b>duplo clique</b> na divisória volta à divisão igual. O tamanho escolhido fica salvo.</p>
+
+  <h2 id="enquadrar">Enquadramento</h2>
+  <h3>Cada área se comporta como uma tela de…</h3>
+  <p>Um dashboard feito para Full HD fica espremido e cortado num quarto da TV. Esta opção resolve isso: a página é desenhada como se tivesse uma tela inteira (por exemplo, 1920 × 1080) e depois é reduzida para caber na área. O dashboard aparece inteiro, igual em tela cheia, só que menor.</p>
+  <ul>
+    <li><b>A resolução atual:</b> usa o tamanho real da área, sem reduzir.</li>
+    <li><b>1920×1080 (Full HD):</b> o mais comum para dashboards.</li>
+    <li><b>3840×2160 (4K):</b> mostra mais informação, com letras menores.</li>
+  </ul>
+  <h3>Encaixe na área</h3>
+  <ul>
+    <li><b>Conter:</b> mostra tudo, sem cortar. Pode sobrar uma faixa escura nas bordas.</li>
+    <li><b>Esticar:</b> preenche a área toda e pode deformar um pouco a imagem.</li>
+  </ul>
+
+  <h2 id="conteudo">Links, tempo e zoom</h2>
+  <p>Cada item da área tem um <b>nome</b> (opcional, aparece na barra da exibição), o <b>link ou mídia</b>, o <b>tempo na tela</b> e o <b>zoom</b>.</p>
+  <table>
+    <tr><th>Tempo digitado</th><th>Significa</th></tr>
+    <tr><td><code>30</code> ou <code>30s</code></td><td>30 segundos</td></tr>
+    <tr><td><code>5m</code> ou <code>5 min</code></td><td>5 minutos</td></tr>
+    <tr><td><code>1h30m</code></td><td>1 hora e meia</td></tr>
+    <tr><td><code>1:30</code> · <code>1:02:03</code></td><td>1 min 30 s · 1 h 2 min 3 s</td></tr>
+  </table>
+  <p>O mínimo é 5 segundos. Uma área com <b>um item só</b> não troca: fica fixa nele.</p>
+  <p>O <b>zoom</b> (25% a 400%) aumenta ou diminui a página só naquela área. Use para ler um dashboard de longe ou para caber mais informação.</p>
+  <h3>Que links funcionam</h3>
+  <ul>
+    <li><b>Dashboards e sistemas:</b> Grafana, Zabbix, Home Assistant, Uptime Kuma etc., por IP (<code>http://192.168.0.10:3000/...</code>) ou por domínio.</li>
+    <li><b>YouTube:</b> cole o link normal (<code>watch</code>, <code>youtu.be</code>, Shorts, live, playlist). O painel converte sozinho para o modo incorporado, sem som e em loop.</li>
+    <li><b>Qualquer site</b> que aceite ser mostrado dentro de outro (iframe). Veja <a href="#problemas">Problemas comuns</a> se aparecer em branco.</li>
+  </ul>
+  <div class="box dica">💡 No Grafana, adicione <code>?kiosk</code> ao fim do link: menus e barra lateral somem e o painel aproveita a área inteira.</div>
+
+  <h2 id="midia">Imagens e vídeos</h2>
+  <p>Clique em <b>Mídia</b>, no topo, ou no botão de imagem ao lado do campo de link. Arraste arquivos para a janela ou clique em <i>Escolher arquivos</i>. Formatos aceitos: PNG, JPG, GIF, WEBP, SVG, MP4 e WEBM.</p>
+  <ul>
+    <li>Depois, clique numa imagem ou vídeo da biblioteca para usar no item.</li>
+    <li>Ao escolher um <b>vídeo</b>, o tempo na tela vira a duração dele, para o vídeo passar inteiro.</li>
+    <li>Os vídeos tocam <b>sem som</b> e em loop. Os navegadores bloqueiam o som automático.</li>
+    <li>As mídias ficam guardadas <b>neste navegador</b>. Elas não vão para o servidor nem para o arquivo exportado.</li>
+  </ul>
+
+  <h2 id="exibir">Modo exibição</h2>
+  <p>Com o mouse parado, a tela fica limpa: sem barras, sem cursor, e a troca dos itens acontece sem aviso. <b>Mexa o mouse</b> para aparecerem os controles. Eles somem sozinhos depois de alguns segundos.</p>
+  <table>
+    <tr><th>Controle</th><th>O que faz</th></tr>
+    <tr><td>Barra no rodapé de cada área</td><td>Mostra o nome do item, a posição (ex.: 2/3), o tempo de cada um e uma linha de progresso.</td></tr>
+    <tr><td>↻ Atualizar esta área</td><td>Recarrega só aquele item. Use quando um dashboard travar ou ficar desatualizado.</td></tr>
+    <tr><td>↗ Abrir em nova aba</td><td>Abre o item numa aba normal do navegador, por exemplo para fazer login com mais calma.</td></tr>
+    <tr><td>Divisórias azuis</td><td>Arraste para mudar o tamanho das áreas.</td></tr>
+    <tr><td><kbd>F</kbd> ou botão ⛶</td><td>Liga e desliga a tela cheia.</td></tr>
+    <tr><td><kbd>Esc</kbd> ou botão ⚙</td><td>Volta para a configuração.</td></tr>
+  </table>
+  <div class="box ok">✅ Se o navegador fechar ou a TV reiniciar, o painel abre de novo direto na exibição, onde estava.</div>
+
+  <h2 id="login">Login e navegação dentro dos dashboards</h2>
+  <p>Alguns dashboards pedem usuário e senha. É possível fazer o login sem sair da exibição:</p>
+  <ol>
+    <li><b>Clique na área.</b> Ela ganha uma borda amarela e o selo <span class="selo">⏸ Em uso</span>, e a rotação <b>daquela área</b> pausa. As outras continuam girando.</li>
+    <li><b>Clique no campo e digite</b> o usuário e a senha. Se o mouse estava parado, o primeiro clique só seleciona a área, e o segundo já cai no campo.</li>
+    <li>Navegue à vontade: clique, role a página, troque de aba no dashboard.</li>
+    <li>Para voltar a girar, clique no selo <span class="selo">⏸ Em uso · clique aqui para voltar</span>. Se esquecer, a rotação volta sozinha em 5 minutos.</li>
+  </ol>
+  <div class="box aviso">⚠️ Se o dashboard pedir login de novo a cada troca, o problema está no sistema e não no painel: ele não guarda a sessão quando é mostrado dentro de outra página. Veja <a href="#problemas">Problemas comuns</a>, ou use <i>↗ Abrir em nova aba</i> uma vez para fazer o login.</div>
+
+  <h2 id="tv">Levar a configuração para a TV ou outro navegador</h2>
+  <p>A configuração fica no navegador onde você cadastrou. Para usar a mesma configuração na TV:</p>
+  <ol>
+    <li>No seu computador: <b>Importar / Exportar → Baixar arquivo</b>. Isso gera um <code>.yml</code>.</li>
+    <li>Na TV, abra o painel e vá em <b>Importar / Exportar → Abrir arquivo…</b> (ou cole o conteúdo). Depois clique em <b>Aplicar e salvar</b>.</li>
+    <li>Imagens e vídeos <b>não vão no arquivo</b>: envie-os de novo pela <b>Mídia</b> na TV e escolha cada um no item de novo.</li>
+  </ol>
+  <p>O arquivo também serve de <b>backup</b>. Ele é um texto simples (YAML) que dá para editar à mão:</p>
+<pre><code>layout: 2
+tela:
+  resolucao: 1920x1080
+  ajuste: conter
+quadrants:
+- links:
+  - title: Grafana NOC
+    url: http://192.168.0.10:3000/d/abc?kiosk
+    duration: 60
+- links:
+  - title: Zabbix
+    url: http://192.168.0.10/zabbix
+    duration: 300</code></pre>
+
+  <h2 id="privacidade">Privacidade: seus dados ficam com você</h2>
+  <p>Links, imagens e vídeos ficam guardados <b>só no navegador</b> em que você cadastrou. O servidor apenas entrega a página e não recebe nada do que você configura.</p>
+  <ul>
+    <li>Outra pessoa que abrir o mesmo endereço vê o painel <b>vazio</b>.</li>
+    <li>Outro navegador, outra TV ou uma aba anônima também abrem vazios.</li>
+    <li>Limpar os dados do site no navegador apaga a configuração. Exporte um backup antes.</li>
+  </ul>
+
+  <h2 id="rede">Dashboards da rede local quando o painel está num domínio https</h2>
+  <p>Se você abre o painel por um endereço <code>https://</code> e o dashboard é <code>http://192.168.x.x</code>, o Chrome bloqueia a área por segurança. A área mostra um aviso no lugar do dashboard. Para liberar, faça isso uma vez em cada navegador:</p>
+  <ol>
+    <li>Clique no <b>cadeado</b> (ou no ícone de ajustes) ao lado do endereço → <b>Configurações do site</b>.</li>
+    <li>Em <b>Conteúdo não seguro</b>, escolha <b>Permitir</b>.</li>
+    <li>Em <b>Acesso à rede local</b>, escolha <b>Permitir</b>.</li>
+    <li>Recarregue o painel (<kbd>F5</kbd>).</li>
+  </ol>
+  <p>Outra opção é abrir o painel pelo endereço <code>http://</code> da sua rede: nesse caso não há bloqueio.</p>
+
+  <h2 id="problemas">Problemas comuns</h2>
+  <h3>A área fica em branco</h3>
+  <p>O site não permite ser mostrado dentro de outra página (cabeçalho <code>X-Frame-Options</code> ou <code>frame-ancestors</code>). A liberação precisa ser feita no próprio sistema. Exemplos:</p>
+  <ul>
+    <li><b>Grafana:</b> <code>GF_SECURITY_ALLOW_EMBEDDING=true</code></li>
+    <li><b>Zabbix:</b> Administração → Geral → Outros → “Use X-Frame-Options”, deixe vazio ou com o endereço do painel.</li>
+    <li>Sites grandes (Google, bancos, redes sociais) não permitem, e não há o que fazer pelo painel.</li>
+  </ul>
+  <h3>O dashboard pede login toda hora</h3>
+  <p>O cookie de sessão é bloqueado dentro de iframe. No Grafana, use <code>GF_SECURITY_COOKIE_SAMESITE=none</code> com <code>GF_SECURITY_COOKIE_SECURE=true</code> (exige https). Outra saída é criar uma conta de visualização anônima (<code>GF_AUTH_ANONYMOUS_ENABLED=true</code>) para a TV.</p>
+  <h3>Apareceu “Link http bloqueado numa página https”</h3>
+  <p>Veja <a href="#rede">Dashboards da rede local</a>.</p>
+  <h3>O vídeo do YouTube não toca</h3>
+  <p>Alguns vídeos têm a incorporação desativada pelo dono. Mixes automáticos (“Mix - …”) também não incorporam, e por isso o painel toca só o vídeo principal.</p>
+  <h3>A barra de rolagem aparece</h3>
+  <p>O painel já esconde a barra. A roda do mouse continua rolando a página. Se o conteúdo não cabe, aumente a resolução da área (por exemplo, para 4K) ou reduza o zoom.</p>
+  <h3>Sumiu tudo</h3>
+  <p>Você está noutro navegador, numa aba anônima ou limpou os dados do site. Importe o último backup em <b>Importar / Exportar</b>.</p>
+</main>
+</div>
+
+<!-- ======================= ENGLISH ======================= -->
+<div class="wrap" lang="en">
+<nav>
+  <a href="#start">Start in 4 steps</a><a href="#layout-en">Layout and dividers</a><a href="#framing">Framing</a>
+  <a href="#content">Links, time and zoom</a><a href="#media">Images and videos</a><a href="#display">Display mode</a>
+  <a href="#login-en">Logging in to dashboards</a><a href="#tv-en">Take it to the TV</a><a href="#privacy">Privacy</a>
+  <a href="#lan">Local network dashboards</a><a href="#trouble">Troubleshooting</a>
+</nav>
+<main>
+  <h1>How to use the Rotating Panel</h1>
+  <p class="lead">Show several dashboards (Grafana, Zabbix, Home Assistant…), web pages, YouTube videos, images and videos on a TV. The screen can have up to 4 areas, and each one cycles on its own through the items you added.</p>
+
+  <h2 id="start">Start in 4 steps</h2>
+  <ol class="passos">
+    <li><b>Pick a layout.</b><br>Full screen, side by side, 1 large + 2, or a 2 × 2 grid.</li>
+    <li><b>Add content.</b><br>In each area, click <i>Add item</i> and paste a link or pick a media file.</li>
+    <li><b>Set the time.</b><br>How long each item stays on screen before the next one.</li>
+    <li><b>Save and display.</b><br>Click <i>Save</i>, then <i>Start display</i>, and press <kbd>F</kbd> for full screen.</li>
+  </ol>
+  <div class="box dica">💡 Example: a NOC TV with Grafana in area 1, Zabbix in area 2 and, in area 3, a company video alternating with a ticket dashboard every 2 minutes.</div>
+
+  <h2 id="layout-en">Layout and dividers</h2>
+  <p>In <b>Screen layout</b>, choose how many areas the TV shows. Only the areas of the chosen layout appear on display. Whatever is in the other areas is kept for when you use them again.</p>
+  <p>On display, move the mouse to show the <b>blue dividers</b> between areas. <b>Drag</b> a divider to make one area bigger and its neighbour smaller. <b>Double-click</b> it to go back to an even split. The size you choose is saved.</p>
+
+  <h2 id="framing">Framing</h2>
+  <h3>Each area behaves like a screen of…</h3>
+  <p>A dashboard made for Full HD gets squeezed and cropped in a quarter of the TV. This option fixes that: the page is drawn as if it had a whole screen (for example 1920 × 1080) and then scaled down to fit the area. The dashboard shows whole, as in full screen, only smaller.</p>
+  <ul>
+    <li><b>Current resolution:</b> uses the real size of the area, without scaling.</li>
+    <li><b>1920×1080 (Full HD):</b> the most common size for dashboards.</li>
+    <li><b>3840×2160 (4K):</b> fits more information, with smaller text.</li>
+  </ul>
+  <h3>Fit in the area</h3>
+  <ul>
+    <li><b>Contain:</b> shows everything, no cropping. A dark band may be left at the edges.</li>
+    <li><b>Stretch:</b> fills the whole area and may distort the image slightly.</li>
+  </ul>
+
+  <h2 id="content">Links, time and zoom</h2>
+  <p>Each item has a <b>name</b> (optional, shown in the display bar), a <b>link or media file</b>, a <b>time on screen</b> and a <b>zoom</b>.</p>
+  <table>
+    <tr><th>You type</th><th>Means</th></tr>
+    <tr><td><code>30</code> or <code>30s</code></td><td>30 seconds</td></tr>
+    <tr><td><code>5m</code> or <code>5 min</code></td><td>5 minutes</td></tr>
+    <tr><td><code>1h30m</code></td><td>an hour and a half</td></tr>
+    <tr><td><code>1:30</code> · <code>1:02:03</code></td><td>1 min 30 s · 1 h 2 min 3 s</td></tr>
+  </table>
+  <p>The minimum is 5 seconds. An area with <b>a single item</b> doesn't rotate: it stays on that item.</p>
+  <p><b>Zoom</b> (25% to 400%) enlarges or shrinks the page in that area only. Use it to read a dashboard from far away or to fit more information.</p>
+  <h3>Which links work</h3>
+  <ul>
+    <li><b>Dashboards and systems:</b> Grafana, Zabbix, Home Assistant, Uptime Kuma and so on, by IP (<code>http://192.168.0.10:3000/...</code>) or by domain.</li>
+    <li><b>YouTube:</b> paste the normal link (<code>watch</code>, <code>youtu.be</code>, Shorts, live, playlist). The panel turns it into an embed by itself, muted and looped.</li>
+    <li><b>Any site</b> that allows being shown inside another page (iframe). See <a href="#trouble">Troubleshooting</a> if it shows blank.</li>
+  </ul>
+  <div class="box dica">💡 In Grafana, add <code>?kiosk</code> to the end of the link: menus and the sidebar disappear and the dashboard uses the whole area.</div>
+
+  <h2 id="media">Images and videos</h2>
+  <p>Click <b>Media</b> at the top, or the image button next to the link field. Drag files into the window or click <i>Choose files</i>. Accepted formats: PNG, JPG, GIF, WEBP, SVG, MP4 and WEBM.</p>
+  <ul>
+    <li>Then click an image or video in the library to use it in the item.</li>
+    <li>When you pick a <b>video</b>, the time on screen becomes its length, so the whole video plays.</li>
+    <li>Videos play <b>muted</b> and looped. Browsers block autoplay with sound.</li>
+    <li>Media files are stored <b>in this browser</b>. They don't go to the server or into the exported file.</li>
+  </ul>
+
+  <h2 id="display">Display mode</h2>
+  <p>With the mouse still, the screen is clean: no bars, no cursor, and items change without notice. <b>Move the mouse</b> to show the controls. They hide again after a few seconds.</p>
+  <table>
+    <tr><th>Control</th><th>What it does</th></tr>
+    <tr><td>Bar at the bottom of each area</td><td>Shows the item name, its position (e.g. 2/3), its time and a progress line.</td></tr>
+    <tr><td>↻ Reload this area</td><td>Reloads only that item. Use it when a dashboard freezes or goes stale.</td></tr>
+    <tr><td>↗ Open in a new tab</td><td>Opens the item in a normal browser tab, for example to log in at ease.</td></tr>
+    <tr><td>Blue dividers</td><td>Drag them to resize the areas.</td></tr>
+    <tr><td><kbd>F</kbd> or ⛶ button</td><td>Turns full screen on and off.</td></tr>
+    <tr><td><kbd>Esc</kbd> or ⚙ button</td><td>Goes back to the settings.</td></tr>
+  </table>
+  <div class="box ok">✅ If the browser closes or the TV restarts, the panel opens straight back into display mode, where it was.</div>
+
+  <h2 id="login-en">Logging in and browsing inside dashboards</h2>
+  <p>Some dashboards ask for a username and password. You can log in without leaving display mode:</p>
+  <ol>
+    <li><b>Click the area.</b> It gets a yellow border and the <span class="selo">⏸ In use</span> badge, and rotation <b>of that area</b> pauses. The others keep rotating.</li>
+    <li><b>Click the field and type</b> the username and password. If the mouse was still, the first click only selects the area, and the second one lands in the field.</li>
+    <li>Browse freely: click, scroll, switch tabs inside the dashboard.</li>
+    <li>To resume rotation, click the <span class="selo">⏸ In use · click here to resume</span> badge. If you forget, rotation resumes on its own after 5 minutes.</li>
+  </ol>
+  <div class="box aviso">⚠️ If the dashboard asks you to log in again on every rotation, the problem is in that system, not the panel: it doesn't keep the session when shown inside another page. See <a href="#trouble">Troubleshooting</a>, or use <i>↗ Open in a new tab</i> once to log in.</div>
+
+  <h2 id="tv-en">Take the settings to the TV or another browser</h2>
+  <p>Settings stay in the browser where you made them. To use the same settings on the TV:</p>
+  <ol>
+    <li>On your computer: <b>Import / Export → Download file</b>. This creates a <code>.yml</code> file.</li>
+    <li>On the TV, open the panel and go to <b>Import / Export → Open file…</b> (or paste the content). Then click <b>Apply and save</b>.</li>
+    <li>Images and videos are <b>not in the file</b>: upload them again through <b>Media</b> on the TV and pick each one in its item again.</li>
+  </ol>
+  <p>The file is also a <b>backup</b>. It is plain text (YAML) you can edit by hand. See the example in the Portuguese version; the keys are the same.</p>
+
+  <h2 id="privacy">Privacy: your data stays with you</h2>
+  <p>Links, images and videos are stored <b>only in the browser</b> where you added them. The server only delivers the page and receives nothing you configure.</p>
+  <ul>
+    <li>Anyone else opening the same address sees an <b>empty</b> panel.</li>
+    <li>Another browser, another TV or a private window also open empty.</li>
+    <li>Clearing site data in the browser erases the settings. Export a backup first.</li>
+  </ul>
+
+  <h2 id="lan">Local network dashboards when the panel is on an https domain</h2>
+  <p>If you open the panel at an <code>https://</code> address and the dashboard is <code>http://192.168.x.x</code>, Chrome blocks the area for security. The area shows a notice instead of the dashboard. To allow it, do this once in each browser:</p>
+  <ol>
+    <li>Click the <b>padlock</b> (or the settings icon) next to the address → <b>Site settings</b>.</li>
+    <li>Set <b>Insecure content</b> to <b>Allow</b>.</li>
+    <li>Set <b>Local network access</b> to <b>Allow</b>.</li>
+    <li>Reload the panel (<kbd>F5</kbd>).</li>
+  </ol>
+  <p>Or open the panel at its <code>http://</code> address on your network: then nothing is blocked.</p>
+
+  <h2 id="trouble">Troubleshooting</h2>
+  <h3>The area is blank</h3>
+  <p>The site doesn't allow being shown inside another page (<code>X-Frame-Options</code> or <code>frame-ancestors</code> header). It has to be allowed in that system. Examples:</p>
+  <ul>
+    <li><b>Grafana:</b> <code>GF_SECURITY_ALLOW_EMBEDDING=true</code></li>
+    <li><b>Zabbix:</b> Administration → General → Other → “Use X-Frame-Options”: leave it empty or set the panel's address.</li>
+    <li>Big sites (Google, banks, social networks) don't allow it, and the panel can't change that.</li>
+  </ul>
+  <h3>The dashboard keeps asking me to log in</h3>
+  <p>The session cookie is blocked inside the iframe. In Grafana, use <code>GF_SECURITY_COOKIE_SAMESITE=none</code> with <code>GF_SECURITY_COOKIE_SECURE=true</code> (requires https). Another option is anonymous viewer access (<code>GF_AUTH_ANONYMOUS_ENABLED=true</code>) for the TV.</p>
+  <h3>“http link blocked on an https page”</h3>
+  <p>See <a href="#lan">Local network dashboards</a>.</p>
+  <h3>The YouTube video doesn't play</h3>
+  <p>Some videos have embedding turned off by their owner. Automatic mixes (“Mix - …”) don't embed either, so the panel plays only the main video.</p>
+  <h3>A scrollbar shows up</h3>
+  <p>The panel already hides the scrollbar, and the mouse wheel still scrolls the page. If the content doesn't fit, raise the area resolution (for example to 4K) or lower the zoom.</p>
+  <h3>Everything is gone</h3>
+  <p>You are in another browser or a private window, or site data was cleared. Import your latest backup in <b>Import / Export</b>.</p>
+</main>
+</div>
+
+<script>
+document.getElementById("b-idioma").onclick = () => {
+  const d = document.documentElement, i = d.dataset.idioma === "en" ? "pt" : "en";
+  d.dataset.idioma = i; d.lang = i === "en" ? "en" : "pt-BR";
+  try { localStorage.setItem("idioma", i); } catch {}
+};
+if (document.documentElement.dataset.idioma === "en") document.documentElement.lang = "en";
+</script>
+</body>
+</html>

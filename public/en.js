@@ -65,4 +65,6 @@ var EN = {
   "☕ Me pague um café": "☕ Buy me a coffee", "Gostou do painel? Qualquer valor ajuda a manter o projeto.": "Like the panel? Any amount helps keep the project going.",
   "Cartão, Apple Pay ou Google Pay": "Card, Apple Pay or Google Pay", "Copiar chave": "Copy key", "Chave Pix copiada": "Pix key copied",
   "No app do banco: Pix → Pagar com chave → cole a chave.": "In your bank app: Pix → Pay with key → paste the key.",
+  "Como usar o painel": "How to use the panel", "📖 Primeira vez? O": "📖 First time? The", "manual": "manual",
+  "explica o passo a passo, o login nos dashboards e os problemas comuns.": "explains the step by step, logging in to dashboards and common problems.",
 };
