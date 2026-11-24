@@ -49,7 +49,7 @@ var EN = {
   "Em uso em {} item(ns). Clique de novo para apagar mesmo assim.": "Used in {} item(s). Click again to delete anyway.",
   "Clique de novo para apagar.": "Click again to delete.",
   "Apagado": "Deleted", "Não apagou: {}": "Not deleted: {}", "{} arquivo(s) enviado(s)": "{} file(s) uploaded", "erro": "error",
-  "Área sem conteúdo": "Area without content", "⏸ Em uso: rotação pausada · clique fora da área para voltar": "⏸ In use: rotation paused · click outside the area to resume",
+  "Área sem conteúdo": "Area without content", "⏸ Em uso: rotação pausada · clique aqui para voltar": "⏸ In use: rotation paused · click here to resume",
   "Não salvou o estado: {}": "Could not save state: {}", "Tela cheia bloqueada pelo navegador": "Full screen blocked by the browser",
   "Não leu a configuração guardada ({}): usando uma vazia": "Could not read the saved settings ({}): using an empty one",
   "🔒 Tudo o que você cadastra aqui (links, imagens e vídeos) fica guardado só neste navegador. Outra pessoa, ou outro navegador, abre o painel vazio. Para levar para a TV, use Importar / Exportar.":

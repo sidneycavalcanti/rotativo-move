@@ -85,7 +85,7 @@ Numa área pequena, um dashboard responsivo se reorganiza, aperta e corta. Para 
 - **Zoom na hora:** clique dentro da área e use **Ctrl +**, **Ctrl −** ou **Ctrl 0**. É o zoom do próprio navegador e não fica salvo.
 - **Digitar, por exemplo para fazer login:** clique dentro da área e digite normalmente.
   - Enquanto o foco estiver nela, a área **pausa a rotação**, mostra a faixa "Em uso: rotação pausada" e ganha borda âmbar, para a página não trocar no meio do login. As outras áreas continuam girando.
-  - Clicar fora da área retoma a rotação. Depois de 5 min parada, ela retoma sozinha.
+  - Clique no selo amarelo "⏸ Em uso" (ou fora da área) para retomar a rotação. Depois de 5 min parada, ela retoma sozinha.
 
 ## Imagens e vídeos
 
@@ -181,7 +181,7 @@ O servidor não guarda nada de quem usa: cada navegador tem os seus próprios li
 
 - **Tamanho das áreas:** com o mouse em movimento aparecem as divisórias entre as áreas; arraste para aumentar ou diminuir (fica salvo). Duplo clique volta ao padrão.
 - **Barra e progresso:** só aparecem com o mouse em movimento; a troca acontece sozinha no tempo definido, sem aviso na tela.
-- **Navegar / fazer login num painel:** clique dentro da área e use normalmente; a rotação daquela área pausa enquanto você usa (volta ao clicar fora ou após 5 min).
+- **Navegar / fazer login num painel:** clique na área (com o mouse parado há um tempo, o 1º clique seleciona a área e o seguinte já cai no campo) e use normalmente. A rotação daquela área pausa enquanto você usa; o selo amarelo "⏸ Em uso" volta à rotação (sozinha após 5 min).
 - **Botões de cada área** (na barra de baixo): ↻ atualiza a área; ↗ abre o link numa aba nova. Use a aba nova para fazer login quando o sistema não deixa entrar dentro do iframe; depois de logado, atualize a área.
 - Login dentro do iframe depende do sistema: Grafana precisa de `allow_embedding = true` (e `cookie_samesite = none` + HTTPS se o painel estiver em outro domínio); Zabbix precisa liberar o X-Frame-Options em *Administração → Geral → Outros*.
 

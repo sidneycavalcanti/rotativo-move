@@ -122,7 +122,7 @@ textarea:focus{outline:none;border-color:var(--blue)}
 #display.g1 .cell{border-radius:0}
 /* cada "slot" ocupa a area; dois por area para o proximo carregar escondido e entrar com fade */
 .slot{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity .5s ease}
-.slot.on{opacity:1}
+.slot.on{opacity:1;z-index:1}.slot:not(.on){pointer-events:none}  /* o slot escondido (pre-carga) nao pode engolir os cliques do atual */
 /* pagina: desenhada numa tela virtual (ex.: 1920x1080) e reduzida por transform, como se a area fosse uma TV inteira */
 /* a moldura tem o tamanho da tela virtual e corta a sobra do iframe: a barra de rolagem da pagina fica de fora (a roda do mouse continua rolando) */
 .slot .moldura{position:absolute;left:0;top:0;overflow:hidden;background:#fff;transform-origin:0 0}
@@ -155,8 +155,8 @@ textarea:focus{outline:none;border-color:var(--blue)}
 #vigia{position:fixed;inset:0;z-index:5}#display.ativo~#vigia,#display.usando~#vigia{pointer-events:none}
 #display:not(.ativo){cursor:none}
 /* area em uso (login, digitacao): rotacao pausada */
-.pausa{position:absolute;top:10px;left:10px;z-index:3;display:none;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;background:rgba(245,184,74,.92);color:#1d1403;font-size:12.5px;font-weight:700;box-shadow:var(--sh);pointer-events:none}
-.cell.pausado .pausa{display:flex}.cell.pausado{outline:2px solid #f5b84a;outline-offset:-2px}
+.pausa{position:absolute;top:10px;left:10px;z-index:3;display:none;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;background:rgba(245,184,74,.92);color:#1d1403;font-size:12.5px;font-weight:700;box-shadow:var(--sh);cursor:pointer;font-family:inherit}
+.pausa:hover{background:#f5b84a}.cell.pausado .pausa{display:flex}.cell.pausado{outline:2px solid #f5b84a;outline-offset:-2px}
 
 /* tema claro: so a configuracao e as janelas; a exibicao na TV continua escura */
 :root[data-tema=claro] :is(#settings,.modal,#toast){--bg:#f4f6fa;--panel:#fff;--panel2:#f2f5f9;--panel3:#e6ebf2;--line:#dde3ec;--line2:#c6cfdc;
@@ -583,7 +583,7 @@ function esvaziar(slot) { slot.replaceChildren(); slot.dataset.url = ""; }  // p
 const PAUSA_MAX = 5 * 60 * 1000;  // usando a area (login): rotacao parada; volta sozinha depois de 5 min
 function criarArea(cell, links) {
   // dois slots: o proximo carrega escondido e entra com fade, sem tela branca na troca
-  cell.innerHTML = `<div class="slot"></div><div class="slot"></div><div class="pausa">⏸ Em uso: rotação pausada · clique fora da área para voltar</div>
+  cell.innerHTML = `<div class="slot"></div><div class="slot"></div><button class="pausa">⏸ Em uso: rotação pausada · clique aqui para voltar</button>
     <div class="bar"><b></b><span></span><em></em><button data-acao="recarregar" title="Atualizar esta área">${ICO.recarregar}</button><button data-acao="abrir" title="Abrir em nova aba (para fazer login)">${ICO.abrir}</button></div><div class="prog"></div>`;
   observador.observe(cell);
   const [s1, s2] = cell.querySelectorAll(".slot"), bar = cell.querySelector(".bar"), prog = cell.querySelector(".prog");
@@ -615,6 +615,9 @@ function criarArea(cell, links) {
     if (b.dataset.acao === "abrir") return window.open(endereco(links[i].url), "_blank", "noopener");
     esvaziar(atual); preencher(atual, links[i]);  // recria a pagina/imagem/video do item atual (o tempo segue contando)
   });
+  // tira o foco do painel desta area: a rotacao volta e a camada que vigia o mouse retorna
+  const soltar = () => { if (cell.contains(document.activeElement)) document.activeElement.blur(); $("#display").classList.remove("usando"); area.retomar(); };
+  cell.querySelector(".pausa").addEventListener("click", soltar);
   const area = {
     cell,
     pausar() {
@@ -623,7 +626,7 @@ function criarArea(cell, links) {
       prog.style.width = getComputedStyle(prog).width; prog.style.transition = "none";  // congela a barra
       // o slot escondido pode estar pre-carregando o proximo: descarrega para nao gastar a TV
       const outro = atual === s1 ? s2 : s1; if (outro !== atual) esvaziar(outro);
-      clearTimeout(limite); limite = setTimeout(() => area.retomar(), PAUSA_MAX);
+      clearTimeout(limite); limite = setTimeout(soltar, PAUSA_MAX);
     },
     retomar() {
       if (!pausado) return;
@@ -705,6 +708,14 @@ let parado;
 const acordar = () => { $("#display").classList.add("ativo"); clearTimeout(parado); parado = setTimeout(() => $("#display").classList.remove("ativo"), 2500); };
 ["mousemove", "touchstart", "wheel"].forEach(ev => document.addEventListener(ev, acordar, {passive: true}));
 $("#fab").addEventListener("mouseenter", () => clearTimeout(parado));
+// Clique com a camada vigia na frente (mouse parado ha mais de 2,5 s dentro de um painel): entra na area por baixo.
+// O foco vai para o iframe, a rotacao dela pausa e a camada sai da frente ate clicar fora: o proximo clique ja cai no login.
+$("#vigia").addEventListener("mousedown", e => {
+  const f = document.elementsFromPoint(e.clientX, e.clientY).find(el => el.tagName === "IFRAME");
+  if (!f) return;
+  e.preventDefault();  // sem isso o proprio clique tira o foco do iframe logo em seguida
+  f.focus(); $("#display").classList.add("usando");
+});
 
 /* ---------- idioma (pt/en) e tema (claro/escuro): preferencia de cada navegador ---------- */
 const pref = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch {} };
