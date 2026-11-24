@@ -2,38 +2,38 @@
 const {spawn} = require("child_process");
 const assert = require("assert");
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
 
 const PORT = 39000 + Math.floor(Math.random() * 1000);
-const DATA = fs.mkdtempSync(path.join(os.tmpdir(), "painel-"));
-const srv = spawn(process.execPath, [path.join(__dirname, "server.js")], {env: {...process.env, PORT, DATA_DIR: DATA}, stdio: "inherit"});
+const srv = spawn(process.execPath, [path.join(__dirname, "server.js")], {env: {...process.env, PORT}, stdio: "inherit"});
 const url = p => `http://127.0.0.1:${PORT}${p}`;
-const post = body => fetch(url("/api/config"), {method: "POST", headers: {"Content-Type": "application/json"}, body});
+const U = require("./public/util.js");
 
 (async () => {
   for (let i = 0; i < 50; i++) { try { await fetch(url("/health")); break; } catch { await new Promise(r => setTimeout(r, 100)); } }
 
-  const padrao = await (await fetch(url("/api/config"))).json();
-  assert.deepStrictEqual(padrao, {layout: 4, mode: "settings", tela: {resolucao: "auto", ajuste: "conter"},
-                                  quadrants: [{links: []}, {links: []}, {links: []}, {links: []}]});
+  // o servidor nao guarda nada de ninguem: sem API de configuracao nem de midia
+  for (const [m, p] of [["GET", "/api/config"], ["POST", "/api/config"], ["GET", "/api/midia"], ["POST", "/api/midia?nome=a.png"]])
+    assert.notStrictEqual((await fetch(url(p), {method: m, body: m === "POST" ? "{}" : undefined})).status, 200, m + " " + p);
 
-  const r = await post(JSON.stringify({layout: 2, mode: "display", extra: 1, tela: {resolucao: "3840x2160", ajuste: "esticar", lixo: 1},
-    quadrants: [{links: [{title: "Zabbix", url: " http://10.0.0.1/ ", duration: 2}, {url: "http://10.0.0.2/", duration: "30"}]}]}));
-  assert.strictEqual(r.status, 200);
-  const salvo = await (await fetch(url("/api/config"))).json();
-  assert.strictEqual(salvo.mode, "display");
-  assert.strictEqual(salvo.layout, 2);
+  // configuracao (validada no navegador)
+  assert.deepStrictEqual(U.normalizar({}), U.padrao());
+  const salvo = U.normalizar({layout: 2, mode: "display", extra: 1, tela: {resolucao: "3840x2160", ajuste: "esticar", lixo: 1},
+    quadrants: [{links: [{title: "Zabbix", url: " http://10.0.0.1/ ", duration: 2}, {url: "http://10.0.0.2/", duration: "30"}]}]});
+  assert.strictEqual(salvo.mode, "display"); assert.strictEqual(salvo.layout, 2);
   assert.strictEqual(salvo.extra, undefined);                    // campo desconhecido descartado
   assert.deepStrictEqual(salvo.tela, {resolucao: "3840x2160", ajuste: "esticar"});
-  assert.strictEqual((await (await post(JSON.stringify({tela: {resolucao: "999x1", ajuste: "x"}}))).json()).tela.resolucao, "auto");
-  assert.deepStrictEqual((await (await post(JSON.stringify({tela: {divX: 0.3333, divY: 2}}))).json()).tela, {resolucao: "auto", ajuste: "conter", divX: 0.333});  // divisoria arrastada; fora de 0,1-0,9 cai
+  assert.strictEqual(U.normalizar({tela: {resolucao: "999x1", ajuste: "x"}}).tela.resolucao, "auto");
+  assert.deepStrictEqual(U.normalizar({tela: {divX: 0.3333, divY: 2}}).tela, {resolucao: "auto", ajuste: "conter", divX: 0.333});  // divisoria; fora de 0,1-0,9 cai
   assert.strictEqual(salvo.quadrants.length, 4);                 // sempre 4 areas
-  assert.deepStrictEqual(salvo.quadrants[0].links[0], {title: "Zabbix", url: "http://10.0.0.1/", duration: 5, zoom: 100});  // minimo 5 s, zoom padrao
+  assert.deepStrictEqual(salvo.quadrants[0].links[0], {title: "Zabbix", url: "http://10.0.0.1/", duration: 5, zoom: 100});  // minimo 5 s
   assert.strictEqual(salvo.quadrants[0].links[1].duration, 30);
-  assert.ok(fs.existsSync(path.join(DATA, "config.json")));     // persistido no volume
+  assert.strictEqual(U.normalizar({quadrants: [{links: [{url: "http://a/", zoom: 9999}]}]}).quadrants[0].links[0].zoom, 400);
+  assert.throws(() => U.normalizar([]));
+  // nome da midia guardada no navegador
+  assert.strictEqual(U.nomeMidia("Vídeo da Recepção.MP4", 1), "1-video-da-recepcao.mp4");
+  assert.strictEqual(U.nomeMidia("pagina.html", 1), null); assert.strictEqual(U.nomeMidia("semextensao", 1), null);
 
-  assert.strictEqual((await post("{nao e json")).status, 400);
   for (const p of ["/../server.js", "/%2e%2e/server.js", "/..%2fserver.js"])  // nada fora de /public
     assert.notStrictEqual((await fetch(url(p))).status, 200, p);
   assert.match(await (await fetch(url("/"))).text(), /Painel Rotativo/);
@@ -60,34 +60,7 @@ const post = body => fetch(url("/api/config"), {method: "POST", headers: {"Conte
     assert.strictEqual(lerTempo(txt), seg, txt);
   assert.strictEqual(mostrarTempo(90), "1m 30s"); assert.strictEqual(mostrarTempo(3600), "1h"); assert.strictEqual(mostrarTempo(45), "45s");
 
-  // ---------- midia ----------
-  const enviar = (nome, corpo) => fetch(url("/api/midia?nome=" + encodeURIComponent(nome)), {method: "POST", body: corpo});
-  const video = Buffer.alloc(5000, 7);
-  const up = await enviar("Vídeo da Recepção.MP4", video);
-  assert.strictEqual(up.status, 200);
-  const m = await up.json();
-  assert.match(m.nome, /^\d+-video-da-recepcao\.mp4$/);          // nome seguro e unico
-  assert.strictEqual(m.url, "midia/" + m.nome); assert.strictEqual(m.tipo, "video"); assert.strictEqual(m.tamanho, 5000);
-  const lista = await (await fetch(url("/api/midia"))).json();
-  assert.strictEqual(lista.length, 1);
-  const parte = await fetch(url("/" + m.url), {headers: {Range: "bytes=100-199"}});  // o <video> pede pedacos
-  assert.strictEqual(parte.status, 206);
-  assert.strictEqual(parte.headers.get("content-range"), "bytes 100-199/5000");
-  assert.strictEqual((await parte.arrayBuffer()).byteLength, 100);
-  const cheio = await fetch(url("/" + m.url));
-  assert.strictEqual(cheio.headers.get("content-type"), "video/mp4");
-  assert.strictEqual(cheio.headers.get("content-security-policy"), "sandbox");   // SVG enviado nao roda script
-  assert.strictEqual((await cheio.arrayBuffer()).byteLength, 5000);
-  assert.strictEqual((await enviar("pagina.html", "<script>")).status, 400);     // so imagem/video
-  assert.strictEqual((await enviar("vazio.png", "")).status, 400);
-  assert.strictEqual((await fetch(url("/midia/..%2fconfig.json"))).status, 404);
-  assert.strictEqual((await fetch(url("/api/midia/..%2fconfig.json"), {method: "DELETE"})).status, 400);
-  assert.ok(fs.existsSync(path.join(DATA, "config.json")));
-  assert.strictEqual((await fetch(url("/api/midia/" + m.nome), {method: "DELETE"})).status, 200);
-  assert.strictEqual((await (await fetch(url("/api/midia"))).json()).length, 0);
-
   // ---------- funcoes da pagina ----------
-  const U = require("./public/util.js");
   assert.ok(U.urlOk("midia/123-logo.png") && U.urlOk("https://x.y/") && !U.urlOk("midia/../x") && !U.urlOk("ftp://x"));
   assert.strictEqual(U.tipoMidia("midia/1-a.webm"), "video"); assert.strictEqual(U.tipoMidia("https://x/logo.PNG?v=2"), "imagem");
   assert.strictEqual(U.tipoMidia("http://grafana/d/x"), "pagina");
@@ -100,7 +73,6 @@ const post = body => fetch(url("/api/config"), {method: "POST", headers: {"Conte
 
   assert.strictEqual(U.proximoZoom(100, 1), 110); assert.strictEqual(U.proximoZoom(100, -1), 90); assert.strictEqual(U.proximoZoom(400, 1), 400);
   assert.strictEqual(U.proximoZoom(25, -1), 25); assert.strictEqual(U.proximoZoom(130, -1), 125); assert.strictEqual(U.proximoZoom(57, 0), 100);
-  assert.strictEqual((await (await post(JSON.stringify({quadrants: [{links: [{url: "http://a/", zoom: 9999}]}]}))).json()).quadrants[0].links[0].zoom, 400);
 
   // YAML: ida e volta exata + arquivo escrito a mao
   const cfgY = {layout: 3, mode: "display", tela: {resolucao: "1920x1080", ajuste: "conter"}, quadrants: [
@@ -138,4 +110,4 @@ quadrants:
   assert.deepStrictEqual(await (await fetch(url("/api/info"))).json(), {cafe: "", pix: ""});  // sem CAFE_URL/PIX_CHAVE: sem botao
 
   console.log("test ok");
-})().catch(e => { console.error(e); process.exitCode = 1; }).finally(() => { srv.kill(); fs.rmSync(DATA, {recursive: true, force: true}); });
+})().catch(e => { console.error(e); process.exitCode = 1; }).finally(() => srv.kill());

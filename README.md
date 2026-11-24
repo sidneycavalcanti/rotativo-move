@@ -3,8 +3,10 @@
 Tela de NOC para TVs e monitores. A tela é dividida em até 4 áreas, e cada área reveza sozinha entre links cadastrados (Zabbix, Grafana, GLPI...). Cada link tem o seu próprio tempo de exibição.
 
 - **Sem dependências:** o servidor usa só o módulo `http` do Node, e o front-end é um único `public/index.html`.
-- **Estado no servidor:** fica em `data/config.json`. Qualquer TV ou navegador que abra o IP recebe a mesma configuração.
-- **Retomada automática:** se a última tela foi a de exibição, quem abrir o endereço já encontra os links rodando.
+- **Privado por navegador:** links, configuração (`localStorage`) e imagens/vídeos (IndexedDB) ficam só no navegador de quem cadastrou. O servidor só entrega a página e não guarda nada: outra pessoa, ou outro navegador, abre o painel vazio. Uma instância pública pode ser usada por várias pessoas sem que uma veja os dados da outra.
+- **Levar para a TV:** use **Importar / Exportar** (arquivo YAML ou JSON). Imagens e vídeos não vão no arquivo: envie de novo no navegador da TV.
+- **Retomada automática:** se a última tela foi a de exibição, ao reabrir naquele navegador os links já estão rodando.
+- **Limpar os dados do navegador** (ou janela anônima) apaga a configuração: guarde um backup pelo **Importar / Exportar**.
 
 ## Subir em outro local
 
@@ -31,7 +33,7 @@ Se o `pull` pedir login (`unauthorized`), o pacote ainda está privado. Para tor
 
 ```sh
 docker build -t painel-rotativo .
-docker run -d --name painel-rotativo --restart unless-stopped -p 8080:3000 -v "$PWD/data:/data" painel-rotativo
+docker run -d --name painel-rotativo --restart unless-stopped -p 8080:3000 painel-rotativo
 ```
 
 ## Operação
@@ -41,22 +43,18 @@ docker run -d --name painel-rotativo --restart unless-stopped -p 8080:3000 -v "$
 | Atualizar | `git pull && docker compose up -d --build` |
 | Ver logs | `docker compose logs -f` |
 | Saúde | `curl http://localhost:8080/health` responde `{"ok":true}` (o container também tem `HEALTHCHECK`) |
-| Backup | copie `data/config.json`, ou use o botão **Importar / Exportar** na tela |
-| Restaurar | cole o JSON em **Importar / Exportar** → Aplicar, ou coloque o arquivo em `data/` |
+| Backup | botão **Importar / Exportar** → Baixar arquivo, em cada navegador |
+| Restaurar | **Importar / Exportar** → Abrir arquivo → Aplicar |
 | Testar o servidor | `node test.js` (Node 18 ou mais) |
-
-**Permissão da pasta `data/`:** o container entra como root, passa a pasta `/data` para o usuário `node` e só então sobe o servidor. Por isso um `data/` com dono root, que é o caso do `git clone` feito como root, funciona sem ajuste.
-
-Com imagens anteriores a esse ajuste, salvar dava `EACCES: permission denied ... config.json.tmp`. Para resolver, atualize, ou rode na pasta do projeto `sudo chown -R 1000:1000 data && docker compose restart`.
 
 **Atrás de proxy (nginx, Traefik, NPM):** funciona também num subcaminho, como `location /painel/ { proxy_pass http://painel:3000/; }`, porque a página usa caminhos relativos.
 
-**udocker / podman rootless:** sem root de verdade, o container roda com o usuário atual e não troca de dono. A pasta montada precisa permitir gravação para esse usuário. Exemplo com udocker:
+**udocker / podman rootless:** não precisa de volume nem de permissão de gravação. Exemplo com udocker:
 
 ```sh
 udocker pull ghcr.io/sidneycavalcanti/rotativo-move:latest
 udocker create --name=rotativo ghcr.io/sidneycavalcanti/rotativo-move:latest
-mkdir -p data && nohup udocker run -v "$PWD/data:/data" -e PORT=8080 rotativo > rotativo.log 2>&1 &
+nohup udocker run -e PORT=8080 rotativo > rotativo.log 2>&1 &
 ```
 
 O udocker não mapeia portas: o servidor escuta direto na porta do `PORT`.
@@ -66,7 +64,7 @@ O udocker não mapeia portas: o servidor escuta direto na porta do `PORT`.
 1. **Configuração:**
    - escolha o layout: 1 área, 2 lado a lado, 1 grande + 2 empilhadas, ou 2×2;
    - em cada área, adicione links com nome (opcional), URL e tempo na tela (mínimo 5 s; aceita `30s`, `5m`, `1h30m` ou `1:30`), e reordene com ↑ ↓;
-   - **Salvar** grava no servidor;
+   - **Salvar** grava neste navegador;
    - **Iniciar exibição** grava e abre o modo kiosk.
 2. **Exibição:** mova o mouse para ver, em cada área, o nome, a URL e o progresso até a troca, além dos botões de tela cheia (tecla **F**) e de configuração (tecla **Esc**). Com o mouse parado, tudo some e o cursor também.
 
@@ -91,14 +89,13 @@ Numa área pequena, um dashboard responsivo se reorganiza, aperta e corta. Para 
 
 ## Imagens e vídeos
 
-Clique em **Mídia** no topo, ou no botão ao lado do link de um item, e arraste os arquivos, ou use **Escolher arquivos**. O envio mostra o progresso.
+Clique em **Mídia** no topo, ou no botão ao lado do link de um item, e arraste os arquivos, ou use **Escolher arquivos**. Os arquivos não saem da máquina: ficam guardados no navegador.
 
 - **Formatos:** PNG, JPG, GIF, WEBP, SVG e AVIF; vídeos MP4, WEBM, OGV e MOV (o MOV depende do codec).
-- **Armazenamento:** os arquivos ficam no servidor, em `data/midia/`, no mesmo volume da configuração. O backup da pasta `data/` leva tudo.
+- **Armazenamento:** IndexedDB do navegador. O limite é o espaço livre do disco que o navegador libera (normalmente vários GB); o painel pede ao navegador para não apagar esses arquivos sozinho.
 - **Ao escolher um vídeo**, o "Tempo na tela" vira a duração dele. Vídeos tocam sem som, em loop e do começo a cada vez.
-- **Limite:** 2 GB por arquivo. Para mudar, use a variável `MAX_UPLOAD_MB` no `docker-compose.yml`.
 - **Links diretos:** um link para uma imagem ou vídeo (`https://…/banner.png`) também funciona.
-- **Apagar:** o ícone de lixeira, com dois cliques, apaga do servidor. Mídia em uso por algum item aparece marcada como "em uso".
+- **Apagar:** o ícone de lixeira, com dois cliques, apaga do navegador. Mídia em uso por algum item aparece marcada como "em uso".
 
 ## Importar e exportar (YAML ou JSON)
 
@@ -125,7 +122,7 @@ quadrants:
   - links: []
 ```
 
-A configuração não carrega os arquivos de mídia. Para levar tudo a outro servidor, copie também a pasta `data/midia/`.
+A configuração não carrega os arquivos de mídia. No outro navegador, envie as imagens e vídeos de novo e escolha-os nos itens.
 
 ## YouTube
 
@@ -159,27 +156,10 @@ Sistemas na mesma rede e com HTTPS próprio costumam manter o login feito uma ve
 
 | Rota | O que faz |
 |---|---|
-| `GET /api/config` | devolve `data/config.json`, ou o padrão: layout 4, `mode: "settings"`, 4 áreas vazias |
-| `POST /api/config` | valida e grava (máximo de 1 MB, gravação atômica). Devolve o que foi gravado |
-| `GET /api/midia` | lista as mídias: `nome`, `url`, `tipo`, `tamanho`, `data` |
-| `POST /api/midia?nome=foto.png` | envia um arquivo (corpo = os bytes do arquivo) |
-| `DELETE /api/midia/<nome>` | apaga |
-| `GET /midia/<nome>` | o arquivo, com suporte a Range para os vídeos |
+| `GET /api/info` | `{"cafe": "...", "pix": "..."}`: botão "Me pague um café" (vem do `.env`) |
 | `GET /health` | `{"ok": true}` |
 
-```json
-{
-  "layout": 3,
-  "mode": "display",
-  "tela": {"resolucao": "auto", "ajuste": "conter"},
-  "quadrants": [
-    {"links": [{"title": "Zabbix", "url": "http://10.0.0.5/zabbix", "duration": 30}]},
-    {"links": []}, {"links": []}, {"links": []}
-  ]
-}
-```
-
-O servidor sempre guarda 4 áreas, e o `layout` diz quantas aparecem. Campos desconhecidos são descartados, e a duração fica entre 5 s e 24 h.
+Não há API de configuração nem de mídia: o servidor não recebe nem guarda dados de quem usa.
 
 ## Sites que aparecem em branco
 
@@ -195,7 +175,7 @@ Para conferir um site: `curl -sI http://site | grep -i -E "x-frame|frame-ancesto
 
 ## Segurança
 
-O painel não tem login, então qualquer pessoa da rede pode mudar os links. Use-o só em rede interna e não o exponha na internet sem um proxy com autenticação na frente.
+O servidor não guarda nada de quem usa: cada navegador tem os seus próprios links, imagens e vídeos, e ninguém vê os dados de outra pessoa. Por isso o painel pode ficar aberto na internet sem login. Quem tem acesso ao computador/TV vê o que está cadastrado nele.
 
 ## Exibição: tamanho das áreas, login e atualizar
 

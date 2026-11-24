@@ -210,7 +210,41 @@
     return s;
   }
 
-  const api = {traduzir, proximoZoom, paraEmbed, lerTempo, mostrarTempo, urlOk, tipoMidia, encaixe, paraYaml, lerYaml, lerConfigTexto};
+  // Configuracao: aceita so o formato esperado; o que vier a mais e descartado, o que faltar volta ao padrao.
+  // Vale para o que esta guardado no navegador e para o que e importado (YAML/JSON).
+  const RESOLUCOES = ["auto", "1280x720", "1920x1080", "2560x1440", "3840x2160"];
+  const padrao = () => ({layout: 4, mode: "settings", tela: {resolucao: "auto", ajuste: "conter"}, quadrants: [0, 1, 2, 3].map(() => ({links: []}))});
+  function normalizar(c) {
+    if (!c || typeof c !== "object" || Array.isArray(c)) throw new Error("a configuracao precisa ser um objeto");
+    const layout = [1, 2, 3, 4].includes(Number(c.layout)) ? Number(c.layout) : 4;
+    const mode = c.mode === "display" ? "display" : "settings";
+    const t = c.tela && typeof c.tela === "object" ? c.tela : {};
+    const tela = {resolucao: RESOLUCOES.includes(String(t.resolucao)) ? String(t.resolucao) : "auto",
+                  ajuste: t.ajuste === "esticar" ? "esticar" : "conter"};
+    // divisorias arrastadas na exibicao: fracao da largura (divX) e da altura (divY); sem valor = padrao do layout
+    for (const k of ["divX", "divY"]) { const v = Number(t[k]); if (v >= 0.1 && v <= 0.9) tela[k] = Math.round(v * 1000) / 1000; }
+    const qs = Array.isArray(c.quadrants) ? c.quadrants : [];
+    const quadrants = [0, 1, 2, 3].map(i => ({
+      links: (Array.isArray(qs[i] && qs[i].links) ? qs[i].links : []).slice(0, 100).map(l => ({
+        title: String((l && l.title) || "").slice(0, 120),
+        url: String((l && l.url) || "").trim().slice(0, 2000),
+        duration: Math.min(86400, Math.max(5, Math.round(Number(l && l.duration) || 15))),
+        zoom: Math.min(400, Math.max(25, Math.round(Number(l && l.zoom) || 100))),
+      })),
+    }));
+    return {layout, mode, tela, quadrants};
+  }
+
+  // Nome seguro e unico para a midia guardada no navegador: "Logo da Empresa.PNG" -> "1795467000123-logo-da-empresa.png" (null = tipo nao aceito)
+  function nomeMidia(original, agora = Date.now()) {
+    const s = String(original || ""), m = /\.[^.]+$/.exec(s), ext = m ? m[0].toLowerCase() : "";
+    if (!ext || tipoMidia("x" + ext) === "pagina") return null;
+    const base = s.slice(0, s.length - ext.length).normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "arquivo";
+    return `${agora}-${base}${ext}`;
+  }
+
+  const api = {normalizar, padrao, nomeMidia, traduzir, proximoZoom, paraEmbed, lerTempo, mostrarTempo, urlOk, tipoMidia, encaixe, paraYaml, lerYaml, lerConfigTexto};
   if (typeof module !== "undefined") module.exports = api;
   else Object.assign(raiz, api);
 })(this);
