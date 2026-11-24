@@ -56,8 +56,8 @@ var EN = {
     "🔒 Everything you add here (links, images and videos) is stored only in this browser. Anyone else, or another browser, opens an empty panel. To take it to the TV, use Import / Export.",
   "{}: tipo não aceito": "{}: file type not accepted", "Não guardou {}: {}": "Could not store {}: {}",
   "Link http bloqueado numa página https": "http link blocked on an https page",
-  "Abra o painel pelo endereço http da rede (ex.: http://IP:porta) ou use um link https. ↗ abre o link numa aba.": "Open the panel from its http address on your network (e.g. http://IP:port) or use an https link. ↗ opens the link in a tab.",
-  "{} link(s) http não abrem nesta página https: use o painel pelo endereço http da rede": "{} http link(s) can't open on this https page: use the panel from its http address on your network",
+  "No Chrome: cadeado ao lado do endereço → Configurações do site → Conteúdo não seguro e Acesso à rede local → Permitir, e recarregue. Ou abra o painel pelo endereço http da rede.": "In Chrome: padlock next to the address → Site settings → Insecure content and Local network access → Allow, then reload. Or open the panel from its http address on your network.",
+  "{} link(s) http nesta página https: libere \"Conteúdo não seguro\" e \"Acesso à rede local\" nas configurações do site (cadeado) ou use o endereço http da rede": "{} http link(s) on this https page: allow \"Insecure content\" and \"Local network access\" in site settings (padlock) or use the panel's http address on your network",
   "o navegador não deixou guardar ({})": "the browser did not allow saving ({})",
   "Na exibição, arraste as divisórias entre as áreas para aumentar ou diminuir cada uma (duplo clique volta ao padrão).":
     "On display, drag the dividers between areas to make each one bigger or smaller (double-click restores the default).",

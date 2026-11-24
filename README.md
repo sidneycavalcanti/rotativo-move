@@ -188,3 +188,11 @@ O servidor não guarda nada de quem usa: cada navegador tem os seus próprios li
 ## Me pague um café
 
 `CAFE_URL` (Buy Me a Coffee, Ko-fi...) e `PIX_CHAVE` no `.env`. Com Pix, o botão abre uma janela com as duas formas e o botão de copiar a chave.
+
+## Dashboards da rede local pelo domínio https
+
+Aberto por um endereço **https** (ex.: Cloudflare Tunnel), o navegador bloqueia dentro dele links **http** e IPs da rede local (Grafana em `http://172.25…`). A área mostra o aviso. Para liberar, no navegador da TV ou do PC, uma vez por site:
+
+**Chrome/Edge:** cadeado ao lado do endereço → Configurações do site → **Conteúdo não seguro: Permitir** e **Acesso à rede local: Permitir** → recarregue.
+
+O navegador precisa estar na mesma rede dos dashboards. Pelo endereço http da rede (`http://IP:porta`) nada disso é necessário, mas a configuração fica guardada por endereço: o que foi cadastrado no domínio não aparece pelo IP (use Importar / Exportar).
